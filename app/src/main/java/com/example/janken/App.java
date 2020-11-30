@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -121,10 +123,13 @@ public class App {
         File jankensCsv = new File(JANKENS_CSV);
         jankensCsv.createNewFile();
         long jankenId = countFileLines(JANKENS_CSV) + 1;
+        LocalDateTime playedAt = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+        String playedAtStr = formatter.format(playedAt);
         try (FileWriter fw = new FileWriter(jankensCsv, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter pw = new PrintWriter(bw)) {
-            pw.println(jankenId);
+            pw.println(jankenId + CSV_DELIMITER + playedAtStr);
         }
 
         File jankenDetailsCsv = new File(JANKEN_DETAILS_CSV);
