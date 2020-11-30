@@ -3,3 +3,11 @@
 
 # Ignore Gradle build output directory
 build
+
+# IntelliJ
+.idea/
+out/
+
+# Data file
+data/jankens.csv
+data/janken_details.csv
