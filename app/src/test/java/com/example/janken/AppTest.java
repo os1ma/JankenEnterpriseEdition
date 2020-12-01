@@ -55,13 +55,13 @@ class AppTest {
             "2, 1, SCISSORS, PAPER, Alice win !!!, 0, 1",
             "2, 2, SCISSORS, SCISSORS, DRAW !!!, 2, 2"
     })
-    void validInput(int player1HandNum,
-                    int player2HandNum,
-                    String player1HandName,
-                    String player2HandName,
-                    String resultMessage,
-                    int player1Result,
-                    int player2Result) throws IOException {
+    void 正常な入力でじゃんけんが実行され結果が保存される(int player1HandNum,
+                                  int player2HandNum,
+                                  String player1HandName,
+                                  String player2HandName,
+                                  String resultMessage,
+                                  int player1Result,
+                                  int player2Result) throws IOException {
 
         // 準備
 
@@ -130,7 +130,7 @@ class AppTest {
             "",
             " "
     })
-    void invalidInput(String invalidInput) throws IOException {
+    void 不正な入力で再入力が促される(String invalidInput) throws IOException {
 
         stdinSnatcher.inputLine(String.valueOf(invalidInput));
 
