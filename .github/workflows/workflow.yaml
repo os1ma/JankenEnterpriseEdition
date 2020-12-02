@@ -38,4 +38,4 @@ jobs:
       with:
         name: jar
         path: ./app/build/libs/app.jar
-      if-no-files-found: error
+        if-no-files-found: error
