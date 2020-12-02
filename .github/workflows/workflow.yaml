@@ -1,0 +1,41 @@
+name: workflow
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+  schedule:
+    # 日本時間で毎晩 21 時
+    - cron: '0 12 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '11.0.9'
+        java-package: jdk
+        architecture: x64
+    - run: ./bin/build.sh
+    - name: Archive reports
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: reports
+        path: ./app/build/reports/**
+    - name: Archive JAR
+      uses: actions/upload-artifact@v2
+      with:
+        name: jar
+        path: ./app/build/libs/app.jar
+      if-no-files-found: error
