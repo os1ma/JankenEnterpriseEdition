@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'org.owasp.dependencycheck' version '6.0.3'
 }
 
 repositories {
@@ -30,4 +31,8 @@ jar {
     manifest {
         attributes 'Main-Class': application.mainClass.orNull
     }
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 7.0F
 }

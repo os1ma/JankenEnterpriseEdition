@@ -13,6 +13,7 @@ readonly JAR=${PROJECT_HOME}"/app/build/libs/app.jar"
 # ビルド
 "${PROJECT_HOME}/gradlew" \
   clean \
+  dependencyCheckAnalyze \
   build
 
 # JAR の状態での実行をテスト
