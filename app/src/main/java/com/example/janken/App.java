@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class App {
 
@@ -52,13 +51,13 @@ public class App {
 
         // プレイヤー名を取得
 
-        String player1Name = findPlayerNameById(PLAYER_1_ID);
-        String player2Name = findPlayerNameById(PLAYER_2_ID);
+        val player1Name = findPlayerNameById(PLAYER_1_ID);
+        val player2Name = findPlayerNameById(PLAYER_2_ID);
 
         // プレイヤーの手を取得
 
-        Hand player1Hand = scanHand(player1Name);
-        Hand player2Hand = scanHand(player2Name);
+        val player1Hand = scanHand(player1Name);
+        val player2Hand = scanHand(player2Name);
 
         showHandWithName(player1Hand, player1Name);
         showHandWithName(player2Hand, player2Name);
@@ -112,41 +111,41 @@ public class App {
 
         // じゃんけんを生成
 
-        File jankensCsv = new File(JANKENS_CSV);
+        val jankensCsv = new File(JANKENS_CSV);
         jankensCsv.createNewFile();
 
-        long jankenId = countFileLines(JANKENS_CSV) + 1;
-        LocalDateTime playedAt = LocalDateTime.now();
+        val jankenId = countFileLines(JANKENS_CSV) + 1;
+        val playedAt = LocalDateTime.now();
         val janken = new Janken(jankenId, playedAt);
 
         // じゃんけんを保存
 
-        try (FileWriter fw = new FileWriter(jankensCsv, true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter pw = new PrintWriter(bw)) {
+        try (val fw = new FileWriter(jankensCsv, true);
+             val bw = new BufferedWriter(fw);
+             val pw = new PrintWriter(bw)) {
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
-            String playedAtStr = formatter.format(janken.getPlayedAt());
+            val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+            val playedAtStr = formatter.format(janken.getPlayedAt());
             pw.println(janken.getId() + CSV_DELIMITER + playedAtStr);
         }
 
         // じゃんけん明細を生成
 
-        File jankenDetailsCsv = new File(JANKEN_DETAILS_CSV);
+        val jankenDetailsCsv = new File(JANKEN_DETAILS_CSV);
         jankenDetailsCsv.createNewFile();
-        long jankenDetailsCount = countFileLines(JANKEN_DETAILS_CSV);
+        val jankenDetailsCount = countFileLines(JANKEN_DETAILS_CSV);
 
-        long jankenDetail1Id = jankenDetailsCount + 1;
+        val jankenDetail1Id = jankenDetailsCount + 1;
         val jankenDetail1 = new JankenDetail(jankenDetail1Id, jankenId, PLAYER_1_ID, player1Hand, player1Result);
 
-        long jankenDetail2Id = jankenDetailsCount + 2;
+        val jankenDetail2Id = jankenDetailsCount + 2;
         val jankenDetail2 = new JankenDetail(jankenDetail2Id, jankenId, PLAYER_2_ID, player2Hand, player2Result);
 
         // じゃんけん明細を保存
 
-        try (FileWriter fw = new FileWriter(jankenDetailsCsv, true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter pw = new PrintWriter(bw)) {
+        try (val fw = new FileWriter(jankenDetailsCsv, true);
+             val bw = new BufferedWriter(fw);
+             val pw = new PrintWriter(bw)) {
 
             writeJankenDetail(pw, jankenDetail1);
             writeJankenDetail(pw, jankenDetail2);
@@ -167,7 +166,7 @@ public class App {
     }
 
     private static String findPlayerNameById(long playerId) throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
+        try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
                     .map(line -> {
                         String[] values = line.split(CSV_DELIMITER);
@@ -187,7 +186,7 @@ public class App {
     }
 
     private static long countFileLines(String path) throws IOException {
-        try (Stream<String> stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
+        try (val stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
             return stream.count();
         }
     }
@@ -195,7 +194,7 @@ public class App {
     private static Hand scanHand(String playerName) {
         while (true) {
             System.out.println(MessageFormat.format(SCAN_PROMPT_MESSAGE_FORMAT, playerName));
-            String inputStr = STDIN_SCANNER.nextLine();
+            val inputStr = STDIN_SCANNER.nextLine();
 
             val maybeHand = Arrays.stream(Hand.values())
                     .filter(hand -> {
@@ -218,7 +217,7 @@ public class App {
 
     private static void writeJankenDetail(PrintWriter pw,
                                           JankenDetail jankenDetail) {
-        String line = String.join(CSV_DELIMITER,
+        val line = String.join(CSV_DELIMITER,
                 String.valueOf(jankenDetail.getId()),
                 String.valueOf(jankenDetail.getJankenId()),
                 String.valueOf(jankenDetail.getPlayerId()),
