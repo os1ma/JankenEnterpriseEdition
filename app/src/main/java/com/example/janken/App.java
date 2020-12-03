@@ -1,5 +1,9 @@
 package com.example.janken;
 
+import com.example.janken.model.Hand;
+import com.example.janken.model.Result;
+import lombok.val;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -7,6 +11,7 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -16,25 +21,13 @@ public class App {
     private static final int PLAYER_1_ID = 1;
     private static final int PLAYER_2_ID = 2;
 
-    private static final int STONE_NUM = 0;
-    private static final int PAPER_NUM = 1;
-    private static final int SCISSORS_NUM = 2;
-
-    private static final String STONE_STR = "STONE";
-    private static final String PAPER_STR = "PAPER";
-    private static final String SCISSORS_STR = "SCISSORS";
-
-    private static final int WIN = 0;
-    private static final int LOSE = 1;
-    private static final int DRAW = 2;
-
     // 表示するメッセージの形式定義
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final String SCAN_PROMPT_MESSAGE_FORMAT = String.join(LINE_SEPARATOR,
-            STONE_STR + ": " + STONE_NUM,
-            PAPER_STR + ": " + PAPER_NUM,
-            SCISSORS_STR + ": " + SCISSORS_NUM,
+            Hand.STONE.getName() + ": " + Hand.STONE.getValue(),
+            Hand.PAPER.getName() + ": " + Hand.PAPER.getValue(),
+            Hand.SCISSORS.getName() + ": " + Hand.SCISSORS.getValue(),
             "Please select {0} hand:");
     private static final String INVALID_INPUT_MESSAGE_FORMAT = "Invalid input: {0}" + LINE_SEPARATOR;
     private static final String SHOW_HAND_MESSAGE_FORMAT = "{0} selected {1}";
@@ -65,56 +58,56 @@ public class App {
 
         // プレイヤーの手を取得
 
-        int player1Hand = scanHand(player1Name);
-        int player2Hand = scanHand(player2Name);
+        Hand player1Hand = scanHand(player1Name);
+        Hand player2Hand = scanHand(player2Name);
 
         showHandWithName(player1Hand, player1Name);
         showHandWithName(player2Hand, player2Name);
 
         // 勝敗判定
 
-        int player1Result;
-        int player2Result;
-        if (player1Hand == STONE_NUM) {
+        Result player1Result;
+        Result player2Result;
+        if (player1Hand.equals(Hand.STONE)) {
             // プレイヤーがグーの場合
 
-            if (player2Hand == STONE_NUM) {
-                player1Result = DRAW;
-                player2Result = DRAW;
-            } else if (player2Hand == PAPER_NUM) {
-                player1Result = LOSE;
-                player2Result = WIN;
+            if (player2Hand.equals(Hand.STONE)) {
+                player1Result = Result.DRAW;
+                player2Result = Result.DRAW;
+            } else if (player2Hand.equals(Hand.PAPER)) {
+                player1Result = Result.LOSE;
+                player2Result = Result.WIN;
             } else {
-                player1Result = WIN;
-                player2Result = LOSE;
+                player1Result = Result.WIN;
+                player2Result = Result.LOSE;
             }
 
-        } else if (player1Hand == PAPER_NUM) {
+        } else if (player1Hand.equals(Hand.PAPER)) {
             // プレイヤーがパーの場合
 
-            if (player2Hand == STONE_NUM) {
-                player1Result = WIN;
-                player2Result = LOSE;
-            } else if (player2Hand == PAPER_NUM) {
-                player1Result = DRAW;
-                player2Result = DRAW;
+            if (player2Hand.equals(Hand.STONE)) {
+                player1Result = Result.WIN;
+                player2Result = Result.LOSE;
+            } else if (player2Hand.equals(Hand.PAPER)) {
+                player1Result = Result.DRAW;
+                player2Result = Result.DRAW;
             } else {
-                player1Result = LOSE;
-                player2Result = WIN;
+                player1Result = Result.LOSE;
+                player2Result = Result.WIN;
             }
 
         } else {
             // プレイヤーがチョキの場合
 
-            if (player2Hand == STONE_NUM) {
-                player1Result = LOSE;
-                player2Result = WIN;
-            } else if (player2Hand == PAPER_NUM) {
-                player1Result = WIN;
-                player2Result = LOSE;
+            if (player2Hand.equals(Hand.STONE)) {
+                player1Result = Result.LOSE;
+                player2Result = Result.WIN;
+            } else if (player2Hand.equals(Hand.PAPER)) {
+                player1Result = Result.WIN;
+                player2Result = Result.LOSE;
             } else {
-                player1Result = DRAW;
-                player2Result = DRAW;
+                player1Result = Result.DRAW;
+                player2Result = Result.DRAW;
             }
         }
 
@@ -148,9 +141,9 @@ public class App {
         // 勝敗の表示
 
         String resultMessage;
-        if (player1Result == WIN) {
+        if (player1Result.equals(Result.WIN)) {
             resultMessage = MessageFormat.format(WINNING_MESSAGE_FORMAT, player1Name);
-        } else if (player2Result == WIN) {
+        } else if (player2Result.equals(Result.WIN)) {
             resultMessage = MessageFormat.format(WINNING_MESSAGE_FORMAT, player2Name);
         } else {
             resultMessage = DRAW_MESSAGE;
@@ -186,48 +179,42 @@ public class App {
         }
     }
 
-    private static int scanHand(String playerName) {
+    private static Hand scanHand(String playerName) {
         while (true) {
             System.out.println(MessageFormat.format(SCAN_PROMPT_MESSAGE_FORMAT, playerName));
             String inputStr = STDIN_SCANNER.nextLine();
 
-            // 有効な文字列だけ受け付ける
-            if (inputStr.equals(String.valueOf(STONE_NUM))
-                    || inputStr.equals(String.valueOf(PAPER_NUM))
-                    || inputStr.equals(String.valueOf(SCISSORS_NUM))) {
-                return Integer.parseInt(inputStr);
+            val maybeHand = Arrays.stream(Hand.values())
+                    .filter(hand -> {
+                        val handValueStr = String.valueOf(hand.getValue());
+                        return handValueStr.equals(inputStr);
+                    })
+                    .findFirst();
 
+            if (maybeHand.isPresent()) {
+                return maybeHand.get();
             } else {
                 System.out.println(MessageFormat.format(INVALID_INPUT_MESSAGE_FORMAT, inputStr));
             }
         }
     }
 
-    private static void showHandWithName(int hand, String name) {
-        String handStr;
-        if (hand == STONE_NUM) {
-            handStr = STONE_STR;
-        } else if (hand == PAPER_NUM) {
-            handStr = PAPER_STR;
-        } else {
-            handStr = SCISSORS_STR;
-        }
-
-        System.out.println(MessageFormat.format(SHOW_HAND_MESSAGE_FORMAT, name, handStr));
+    private static void showHandWithName(Hand hand, String name) {
+        System.out.println(MessageFormat.format(SHOW_HAND_MESSAGE_FORMAT, name, hand.getName()));
     }
 
     private static void writeJankenDetail(PrintWriter pw,
                                           long jankenDetailId,
                                           long jankenId,
                                           int playerId,
-                                          int playerHand,
-                                          int playerResult) {
+                                          Hand playerHand,
+                                          Result playerResult) {
         String line = String.join(CSV_DELIMITER,
                 String.valueOf(jankenDetailId),
                 String.valueOf(jankenId),
                 String.valueOf(playerId),
-                String.valueOf(playerHand),
-                String.valueOf(playerResult));
+                String.valueOf(playerHand.getValue()),
+                String.valueOf(playerResult.getValue()));
         pw.println(line);
     }
 
