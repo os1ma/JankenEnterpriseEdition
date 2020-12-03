@@ -1,7 +1,6 @@
 package com.example.janken;
 
-import com.example.janken.model.Hand;
-import com.example.janken.model.Result;
+import com.example.janken.model.*;
 import lombok.val;
 
 import java.io.*;
@@ -18,8 +17,8 @@ import java.util.stream.Stream;
 public class App {
 
     // ID は実際のアプリケーションでは認証情報から取得することが想定される
-    private static final int PLAYER_1_ID = 1;
-    private static final int PLAYER_2_ID = 2;
+    private static final long PLAYER_1_ID = 1;
+    private static final long PLAYER_2_ID = 2;
 
     // 表示するメッセージの形式定義
 
@@ -111,31 +110,46 @@ public class App {
             }
         }
 
-        // 結果を保存
+        // じゃんけんを生成
 
         File jankensCsv = new File(JANKENS_CSV);
         jankensCsv.createNewFile();
+
         long jankenId = countFileLines(JANKENS_CSV) + 1;
         LocalDateTime playedAt = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
-        String playedAtStr = formatter.format(playedAt);
+        val janken = new Janken(jankenId, playedAt);
+
+        // じゃんけんを保存
+
         try (FileWriter fw = new FileWriter(jankensCsv, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter pw = new PrintWriter(bw)) {
-            pw.println(jankenId + CSV_DELIMITER + playedAtStr);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+            String playedAtStr = formatter.format(janken.getPlayedAt());
+            pw.println(janken.getId() + CSV_DELIMITER + playedAtStr);
         }
+
+        // じゃんけん明細を生成
 
         File jankenDetailsCsv = new File(JANKEN_DETAILS_CSV);
         jankenDetailsCsv.createNewFile();
         long jankenDetailsCount = countFileLines(JANKEN_DETAILS_CSV);
+
+        long jankenDetail1Id = jankenDetailsCount + 1;
+        val jankenDetail1 = new JankenDetail(jankenDetail1Id, jankenId, PLAYER_1_ID, player1Hand, player1Result);
+
+        long jankenDetail2Id = jankenDetailsCount + 2;
+        val jankenDetail2 = new JankenDetail(jankenDetail2Id, jankenId, PLAYER_2_ID, player2Hand, player2Result);
+
+        // じゃんけん明細を保存
+
         try (FileWriter fw = new FileWriter(jankenDetailsCsv, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter pw = new PrintWriter(bw)) {
 
-            long jankenDetail1Id = jankenDetailsCount + 1;
-            writeJankenDetail(pw, jankenDetail1Id, jankenId, PLAYER_1_ID, player1Hand, player1Result);
-            long jankenDetail2Id = jankenDetailsCount + 2;
-            writeJankenDetail(pw, jankenDetail2Id, jankenId, PLAYER_2_ID, player2Hand, player2Result);
+            writeJankenDetail(pw, jankenDetail1);
+            writeJankenDetail(pw, jankenDetail2);
         }
 
         // 勝敗の表示
@@ -152,20 +166,19 @@ public class App {
         System.out.println(resultMessage);
     }
 
-    private static String findPlayerNameById(int playerId) throws IOException {
+    private static String findPlayerNameById(long playerId) throws IOException {
         try (Stream<String> stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
-                    // ID で検索
-                    .filter(line -> {
-                        String[] values = line.split(CSV_DELIMITER);
-                        int id = Integer.parseInt(values[0]);
-                        return id == playerId;
-                    })
-                    // 名前のみに変換
                     .map(line -> {
                         String[] values = line.split(CSV_DELIMITER);
-                        return values[1];
+                        long id = Long.parseLong(values[0]);
+                        String name = values[1];
+                        return new Player(id, name);
                     })
+                    // ID で検索
+                    .filter(p -> p.getId() == playerId)
+                    // 名前のみに変換
+                    .map(Player::getName)
                     .findFirst()
                     .orElseThrow(() -> {
                         throw new IllegalArgumentException("Player not exist. playerId = " + playerId);
@@ -204,17 +217,13 @@ public class App {
     }
 
     private static void writeJankenDetail(PrintWriter pw,
-                                          long jankenDetailId,
-                                          long jankenId,
-                                          int playerId,
-                                          Hand playerHand,
-                                          Result playerResult) {
+                                          JankenDetail jankenDetail) {
         String line = String.join(CSV_DELIMITER,
-                String.valueOf(jankenDetailId),
-                String.valueOf(jankenId),
-                String.valueOf(playerId),
-                String.valueOf(playerHand.getValue()),
-                String.valueOf(playerResult.getValue()));
+                String.valueOf(jankenDetail.getId()),
+                String.valueOf(jankenDetail.getJankenId()),
+                String.valueOf(jankenDetail.getPlayerId()),
+                String.valueOf(jankenDetail.getHand().getValue()),
+                String.valueOf(jankenDetail.getResult().getValue()));
         pw.println(line);
     }
 
