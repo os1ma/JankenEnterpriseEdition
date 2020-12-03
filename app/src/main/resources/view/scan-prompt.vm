@@ -1,0 +1,4 @@
+#foreach($hand in $hands)
+$hand.name: $hand.value
+#end
+Please select $player.name hand:

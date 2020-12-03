@@ -8,6 +8,11 @@ repositories {
 }
 
 dependencies {
+    // Template engine
+    implementation 'org.apache.velocity:velocity:1.7'
+    // Velocity が依存する commons-collections:3.2.1 から明示的にバージョンアップ (CVE-2015-6420, CVE-2017-15708 の対応)
+    implementation 'commons-collections:commons-collections:3.2.2'
+
     // Development tools
     def lombokVersion = '1.18.16'
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -35,6 +40,9 @@ run {
 }
 
 jar {
+    // 依存関係を含む JAR ファイルをビルドする設定
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+
     manifest {
         attributes 'Main-Class': application.mainClass.orNull
     }

@@ -1,5 +1,6 @@
 package com.example.janken;
 
+import com.example.janken.framework.View;
 import com.example.janken.model.*;
 import lombok.val;
 
@@ -7,7 +8,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -19,22 +19,10 @@ public class App {
     private static final long PLAYER_1_ID = 1;
     private static final long PLAYER_2_ID = 2;
 
-    // 表示するメッセージの形式定義
-
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final String SCAN_PROMPT_MESSAGE_FORMAT = String.join(LINE_SEPARATOR,
-            Hand.STONE.getName() + ": " + Hand.STONE.getValue(),
-            Hand.PAPER.getName() + ": " + Hand.PAPER.getValue(),
-            Hand.SCISSORS.getName() + ": " + Hand.SCISSORS.getValue(),
-            "Please select {0} hand:");
-    private static final String INVALID_INPUT_MESSAGE_FORMAT = "Invalid input: {0}" + LINE_SEPARATOR;
-    private static final String SHOW_HAND_MESSAGE_FORMAT = "{0} selected {1}";
-    private static final String WINNING_MESSAGE_FORMAT = "{0} win !!!";
-    private static final String DRAW_MESSAGE = "DRAW !!!";
-
     // 入力スキャナ
-
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
+
+    private static final String VIEW_RESOURCE_PREFIX = "view/";
 
     // データ保存に関する定義
 
@@ -51,16 +39,16 @@ public class App {
 
         // プレイヤー名を取得
 
-        val player1Name = findPlayerNameById(PLAYER_1_ID);
-        val player2Name = findPlayerNameById(PLAYER_2_ID);
+        val player1 = findPlayerById(PLAYER_1_ID);
+        val player2 = findPlayerById(PLAYER_2_ID);
 
         // プレイヤーの手を取得
 
-        val player1Hand = scanHand(player1Name);
-        val player2Hand = scanHand(player2Name);
+        val player1Hand = scanHand(player1);
+        val player2Hand = scanHand(player2);
 
-        showHandWithName(player1Hand, player1Name);
-        showHandWithName(player2Hand, player2Name);
+        showHandWithName(player1Hand, player1);
+        showHandWithName(player2Hand, player2);
 
         // 勝敗判定
 
@@ -153,19 +141,19 @@ public class App {
 
         // 勝敗の表示
 
-        String resultMessage;
+        Player winner = null;
         if (player1Result.equals(Result.WIN)) {
-            resultMessage = MessageFormat.format(WINNING_MESSAGE_FORMAT, player1Name);
+            winner = player1;
         } else if (player2Result.equals(Result.WIN)) {
-            resultMessage = MessageFormat.format(WINNING_MESSAGE_FORMAT, player2Name);
-        } else {
-            resultMessage = DRAW_MESSAGE;
+            winner = player2;
         }
 
-        System.out.println(resultMessage);
+        new View(VIEW_RESOURCE_PREFIX + "result.vm")
+                .with("winner", winner)
+                .show();
     }
 
-    private static String findPlayerNameById(long playerId) throws IOException {
+    private static Player findPlayerById(long playerId) throws IOException {
         try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
                     .map(line -> {
@@ -176,8 +164,6 @@ public class App {
                     })
                     // ID で検索
                     .filter(p -> p.getId() == playerId)
-                    // 名前のみに変換
-                    .map(Player::getName)
                     .findFirst()
                     .orElseThrow(() -> {
                         throw new IllegalArgumentException("Player not exist. playerId = " + playerId);
@@ -191,9 +177,13 @@ public class App {
         }
     }
 
-    private static Hand scanHand(String playerName) {
+    private static Hand scanHand(Player player) {
         while (true) {
-            System.out.println(MessageFormat.format(SCAN_PROMPT_MESSAGE_FORMAT, playerName));
+            new View(VIEW_RESOURCE_PREFIX + "scan-prompt.vm")
+                    .with("player", player)
+                    .with("hands", Hand.values())
+                    .show();
+
             val inputStr = STDIN_SCANNER.nextLine();
 
             val maybeHand = Arrays.stream(Hand.values())
@@ -206,13 +196,18 @@ public class App {
             if (maybeHand.isPresent()) {
                 return maybeHand.get();
             } else {
-                System.out.println(MessageFormat.format(INVALID_INPUT_MESSAGE_FORMAT, inputStr));
+                new View(VIEW_RESOURCE_PREFIX + "invalid-input.vm")
+                        .with("input", inputStr)
+                        .show();
             }
         }
     }
 
-    private static void showHandWithName(Hand hand, String name) {
-        System.out.println(MessageFormat.format(SHOW_HAND_MESSAGE_FORMAT, name, hand.getName()));
+    private static void showHandWithName(Hand hand, Player player) {
+        new View(VIEW_RESOURCE_PREFIX + "show-hand.vm")
+                .with("player", player)
+                .with("hand", hand)
+                .show();
     }
 
     private static void writeJankenDetail(PrintWriter pw,
