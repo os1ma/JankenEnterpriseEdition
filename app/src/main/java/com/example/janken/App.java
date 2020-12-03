@@ -169,9 +169,9 @@ public class App {
         try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
                     .map(line -> {
-                        String[] values = line.split(CSV_DELIMITER);
-                        long id = Long.parseLong(values[0]);
-                        String name = values[1];
+                        val values = line.split(CSV_DELIMITER);
+                        val id = Long.parseLong(values[0]);
+                        val name = values[1];
                         return new Player(id, name);
                     })
                     // ID で検索
