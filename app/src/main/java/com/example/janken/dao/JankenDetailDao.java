@@ -1,15 +1,35 @@
 package com.example.janken.dao;
 
+import com.example.janken.model.Hand;
 import com.example.janken.model.JankenDetail;
+import com.example.janken.model.Result;
 import lombok.val;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JankenDetailDao {
 
     private static final String JANKEN_DETAILS_CSV = DaoUtils.DATA_DIR + "janken_details.csv";
+
+    public Optional<JankenDetail> findById(long id) {
+        try (val stream = Files.lines(Paths.get(JANKEN_DETAILS_CSV), StandardCharsets.UTF_8)) {
+            return stream.map(this::line2JankenDetail)
+                    .filter(j -> j.getId() == id)
+                    .findFirst();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public long count() {
+        return DaoUtils.countFileLines(JANKEN_DETAILS_CSV);
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public List<JankenDetail> insertAll(List<JankenDetail> jankenDetails) {
@@ -34,7 +54,8 @@ public class JankenDetailDao {
                         jankenDetail.getHand(),
                         jankenDetail.getResult());
 
-                writeJankenDetail(pw, jankenDetailWithId);
+                val line = jankenDetail2Line(jankenDetailWithId);
+                pw.println(line);
 
                 jankenDetailWithIds.add(jankenDetailWithId);
             }
@@ -46,15 +67,29 @@ public class JankenDetailDao {
         }
     }
 
-    private static void writeJankenDetail(PrintWriter pw,
-                                          JankenDetail jankenDetail) {
-        val line = String.join(DaoUtils.CSV_DELIMITER,
+    private JankenDetail line2JankenDetail(String line) {
+        val values = line.split(DaoUtils.CSV_DELIMITER);
+        val jankenDetailId = Long.valueOf(values[0]);
+        val jankenId = Long.valueOf(values[1]);
+        val playerId = Long.valueOf(values[2]);
+        val hand = Hand.of(Integer.parseInt(values[3]));
+        val result = Result.of(Integer.parseInt(values[4]));
+
+        return new JankenDetail(
+                jankenDetailId,
+                jankenId,
+                playerId,
+                hand,
+                result);
+    }
+
+    private String jankenDetail2Line(JankenDetail jankenDetail) {
+        return String.join(DaoUtils.CSV_DELIMITER,
                 String.valueOf(jankenDetail.getId()),
                 String.valueOf(jankenDetail.getJankenId()),
                 String.valueOf(jankenDetail.getPlayerId()),
                 String.valueOf(jankenDetail.getHand().getValue()),
                 String.valueOf(jankenDetail.getResult().getValue()));
-        pw.println(line);
     }
 
 }

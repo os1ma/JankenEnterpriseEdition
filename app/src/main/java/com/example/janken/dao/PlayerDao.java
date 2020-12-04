@@ -16,21 +16,21 @@ public class PlayerDao {
     public Player findPlayerById(long playerId) {
         try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
-                    .map(line -> {
-                        val values = line.split(DaoUtils.CSV_DELIMITER);
-                        val id = Long.parseLong(values[0]);
-                        val name = values[1];
-                        return new Player(id, name);
-                    })
-                    // ID で検索
+                    .map(this::line2Player)
                     .filter(p -> p.getId() == playerId)
                     .findFirst()
-                    .orElseThrow(() -> {
-                        throw new IllegalArgumentException("Player not exist. playerId = " + playerId);
-                    });
+                    .orElseThrow();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Player line2Player(String line) {
+        val values = line.split(DaoUtils.CSV_DELIMITER);
+        val id = Long.parseLong(values[0]);
+        val name = values[1];
+
+        return new Player(id, name);
     }
 
 }
