@@ -2,6 +2,7 @@ package com.example.janken.controller;
 
 import com.example.janken.framework.View;
 import com.example.janken.model.*;
+import com.example.janken.service.PlayerService;
 import lombok.val;
 
 import java.io.*;
@@ -30,17 +31,18 @@ public class JankenController {
     private static final String DEFAULT_DATA_DIR = System.getProperty("user.dir") + "/../data/";
     private static final String DATA_DIR_ENV_VARIABLE = System.getenv("DATA_DIR");
     private static final String DATA_DIR = DATA_DIR_ENV_VARIABLE != null ? DATA_DIR_ENV_VARIABLE + "/" : DEFAULT_DATA_DIR;
-    private static final String PLAYERS_CSV = DATA_DIR + "players.csv";
     private static final String JANKENS_CSV = DATA_DIR + "jankens.csv";
     private static final String JANKEN_DETAILS_CSV = DATA_DIR + "janken_details.csv";
     private static final String CSV_DELIMITER = ",";
+
+    private PlayerService playerService = new PlayerService();
 
     public void play() throws IOException {
 
         // プレイヤー名を取得
 
-        val player1 = findPlayerById(PLAYER_1_ID);
-        val player2 = findPlayerById(PLAYER_2_ID);
+        val player1 = playerService.findPlayerById(PLAYER_1_ID);
+        val player2 = playerService.findPlayerById(PLAYER_2_ID);
 
         // プレイヤーの手を取得
 
@@ -151,24 +153,6 @@ public class JankenController {
         new View(VIEW_RESOURCE_PREFIX + "result.vm")
                 .with("winner", winner)
                 .show();
-    }
-
-    private static Player findPlayerById(long playerId) throws IOException {
-        try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
-            return stream
-                    .map(line -> {
-                        val values = line.split(CSV_DELIMITER);
-                        val id = Long.parseLong(values[0]);
-                        val name = values[1];
-                        return new Player(id, name);
-                    })
-                    // ID で検索
-                    .filter(p -> p.getId() == playerId)
-                    .findFirst()
-                    .orElseThrow(() -> {
-                        throw new IllegalArgumentException("Player not exist. playerId = " + playerId);
-                    });
-        }
     }
 
     private static long countFileLines(String path) throws IOException {
