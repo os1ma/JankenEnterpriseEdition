@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class JankenDao {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static final String JANKENS_CSV = DaoUtils.DATA_DIR + "jankens.csv";
 
     public Optional<Janken> findById(long id) {
@@ -56,13 +56,13 @@ public class JankenDao {
     private Janken line2Janken(String line) {
         val values = line.split(DaoUtils.CSV_DELIMITER);
         val jankenId = Long.valueOf(values[0]);
-        val playedAt = LocalDateTime.parse(values[1], dateTimeFormatter);
+        val playedAt = LocalDateTime.parse(values[1], DATE_TIME_FORMATTER);
 
         return new Janken(jankenId, playedAt);
     }
 
     private String janken2Line(Janken janken) {
-        val playedAtStr = dateTimeFormatter.format(janken.getPlayedAt());
+        val playedAtStr = DATE_TIME_FORMATTER.format(janken.getPlayedAt());
 
         return janken.getId() + DaoUtils.CSV_DELIMITER + playedAtStr;
     }
