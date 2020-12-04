@@ -24,13 +24,8 @@ public class JankenController {
     private JankenService jankenService = new JankenService();
 
     public void play() throws IOException {
-
-        // プレイヤー名を取得
-
         val player1 = playerService.findPlayerById(PLAYER_1_ID);
         val player2 = playerService.findPlayerById(PLAYER_2_ID);
-
-        // プレイヤーの手を取得
 
         val player1Hand = scanHand(player1);
         val player2Hand = scanHand(player2);
