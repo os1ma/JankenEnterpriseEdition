@@ -7,6 +7,7 @@ import lombok.val;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public class JankenService {
@@ -80,11 +81,11 @@ public class JankenService {
 
         val jankenDetail1 = new JankenDetail(null, jankenWithId.getId(), player1.getId(), player1Hand, player1Result);
         val jankenDetail2 = new JankenDetail(null, jankenWithId.getId(), player2.getId(), player2Hand, player2Result);
+        val jankenDetails = List.of(jankenDetail1, jankenDetail2);
 
         // じゃんけん明細を保存
 
-        jankenDetailDao.insert(jankenDetail1);
-        jankenDetailDao.insert(jankenDetail2);
+        jankenDetailDao.insertAll(jankenDetails);
 
         // 勝者を返却
 

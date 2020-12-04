@@ -4,13 +4,15 @@ import com.example.janken.model.JankenDetail;
 import lombok.val;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JankenDetailDao {
 
     private static final String JANKEN_DETAILS_CSV = DaoUtils.DATA_DIR + "janken_details.csv";
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public JankenDetail insert(JankenDetail jankenDetail) {
+    public List<JankenDetail> insertAll(List<JankenDetail> jankenDetails) {
         val jankenDetailsCsv = new File(JANKEN_DETAILS_CSV);
 
         try (val fw = new FileWriter(jankenDetailsCsv, true);
@@ -20,17 +22,25 @@ public class JankenDetailDao {
             // ファイルが存在しない場合に備えて作成
             jankenDetailsCsv.createNewFile();
 
-            val jankenDetailId = DaoUtils.countFileLines(JANKEN_DETAILS_CSV) + 1;
-            val jankenDetailWithId = new JankenDetail(
-                    jankenDetailId,
-                    jankenDetail.getJankenId(),
-                    jankenDetail.getPlayerId(),
-                    jankenDetail.getHand(),
-                    jankenDetail.getResult());
+            val jankenDetailWithIds = new ArrayList<JankenDetail>();
+            for (int i = 0; i < jankenDetails.size(); i++) {
+                val jankenDetail = jankenDetails.get(i);
 
-            writeJankenDetail(pw, jankenDetailWithId);
+                val jankenDetailId = DaoUtils.countFileLines(JANKEN_DETAILS_CSV) + i + 1;
+                val jankenDetailWithId = new JankenDetail(
+                        jankenDetailId,
+                        jankenDetail.getJankenId(),
+                        jankenDetail.getPlayerId(),
+                        jankenDetail.getHand(),
+                        jankenDetail.getResult());
 
-            return jankenDetailWithId;
+                writeJankenDetail(pw, jankenDetailWithId);
+
+                jankenDetailWithIds.add(jankenDetailWithId);
+            }
+
+            return jankenDetailWithIds;
+
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
