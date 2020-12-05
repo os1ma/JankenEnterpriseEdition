@@ -1,6 +1,6 @@
 package com.example.janken;
 
-import com.example.janken.controller.JankenController;
+import com.example.janken.presentation.controller.JankenController;
 import lombok.val;
 
 public class App {

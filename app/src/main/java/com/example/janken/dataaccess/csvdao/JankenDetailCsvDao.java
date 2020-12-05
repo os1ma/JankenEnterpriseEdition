@@ -1,8 +1,8 @@
-package com.example.janken.csvdao;
+package com.example.janken.dataaccess.csvdao;
 
-import com.example.janken.model.Hand;
-import com.example.janken.model.JankenDetail;
-import com.example.janken.model.Result;
+import com.example.janken.dataaccess.model.Hand;
+import com.example.janken.dataaccess.model.JankenDetail;
+import com.example.janken.dataaccess.model.Result;
 import lombok.val;
 
 import java.io.*;

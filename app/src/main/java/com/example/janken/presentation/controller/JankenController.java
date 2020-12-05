@@ -1,10 +1,10 @@
-package com.example.janken.controller;
+package com.example.janken.presentation.controller;
 
 import com.example.janken.framework.View;
-import com.example.janken.model.Hand;
-import com.example.janken.model.Player;
-import com.example.janken.service.JankenService;
-import com.example.janken.service.PlayerService;
+import com.example.janken.dataaccess.model.Hand;
+import com.example.janken.dataaccess.model.Player;
+import com.example.janken.businesslogic.service.JankenService;
+import com.example.janken.businesslogic.service.PlayerService;
 import lombok.val;
 
 import java.util.Arrays;

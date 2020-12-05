@@ -1,6 +1,6 @@
-package com.example.janken.csvdao;
+package com.example.janken.dataaccess.csvdao;
 
-import com.example.janken.model.Janken;
+import com.example.janken.dataaccess.model.Janken;
 import lombok.val;
 
 import java.io.*;

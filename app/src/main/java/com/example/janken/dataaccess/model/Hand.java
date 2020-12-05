@@ -1,4 +1,4 @@
-package com.example.janken.model;
+package com.example.janken.dataaccess.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
