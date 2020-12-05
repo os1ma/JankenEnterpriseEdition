@@ -1,4 +1,4 @@
-package com.example.janken.dao;
+package com.example.janken.csvdao;
 
 import lombok.val;
 
@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class DaoUtils {
+class CsvDaoUtils {
 
     // JankenEnterpriseEdition/app/../data/ を指す
     private static final String DEFAULT_DATA_DIR = System.getProperty("user.dir") + "/../data/";

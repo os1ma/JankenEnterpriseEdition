@@ -1,4 +1,4 @@
-package com.example.janken.dao;
+package com.example.janken.csvdao;
 
 import com.example.janken.model.Player;
 import lombok.val;
@@ -9,9 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class PlayerDao {
+public class PlayerCsvDao {
 
-    private static final String PLAYERS_CSV = DaoUtils.DATA_DIR + "players.csv";
+    private static final String PLAYERS_CSV = CsvDaoUtils.DATA_DIR + "players.csv";
 
     public Player findPlayerById(long playerId) {
         try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
@@ -26,7 +26,7 @@ public class PlayerDao {
     }
 
     private Player line2Player(String line) {
-        val values = line.split(DaoUtils.CSV_DELIMITER);
+        val values = line.split(CsvDaoUtils.CSV_DELIMITER);
         val id = Long.parseLong(values[0]);
         val name = values[1];
 

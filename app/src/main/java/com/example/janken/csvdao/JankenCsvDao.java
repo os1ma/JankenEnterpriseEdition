@@ -1,4 +1,4 @@
-package com.example.janken.dao;
+package com.example.janken.csvdao;
 
 import com.example.janken.model.Janken;
 import lombok.val;
@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class JankenDao {
+public class JankenCsvDao {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    private static final String JANKENS_CSV = DaoUtils.DATA_DIR + "jankens.csv";
+    private static final String JANKENS_CSV = CsvDaoUtils.DATA_DIR + "jankens.csv";
 
     public Optional<Janken> findById(long id) {
         try (val stream = Files.lines(Paths.get(JANKENS_CSV), StandardCharsets.UTF_8)) {
@@ -27,7 +27,7 @@ public class JankenDao {
     }
 
     public long count() {
-        return DaoUtils.countFileLines(JANKENS_CSV);
+        return CsvDaoUtils.countFileLines(JANKENS_CSV);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -41,7 +41,7 @@ public class JankenDao {
             // ファイルが存在しない場合に備えて作成
             jankensCsv.createNewFile();
 
-            val jankenId = DaoUtils.countFileLines(JANKENS_CSV) + 1;
+            val jankenId = CsvDaoUtils.countFileLines(JANKENS_CSV) + 1;
             val jankenWithId = new Janken(jankenId, janken.getPlayedAt());
 
             val line = janken2Line(jankenWithId);
@@ -54,7 +54,7 @@ public class JankenDao {
     }
 
     private Janken line2Janken(String line) {
-        val values = line.split(DaoUtils.CSV_DELIMITER);
+        val values = line.split(CsvDaoUtils.CSV_DELIMITER);
         val jankenId = Long.valueOf(values[0]);
         val playedAt = LocalDateTime.parse(values[1], DATE_TIME_FORMATTER);
 
@@ -64,7 +64,7 @@ public class JankenDao {
     private String janken2Line(Janken janken) {
         val playedAtStr = DATE_TIME_FORMATTER.format(janken.getPlayedAt());
 
-        return janken.getId() + DaoUtils.CSV_DELIMITER + playedAtStr;
+        return janken.getId() + CsvDaoUtils.CSV_DELIMITER + playedAtStr;
     }
 
 }

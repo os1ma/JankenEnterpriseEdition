@@ -1,7 +1,7 @@
 package com.example.janken;
 
-import com.example.janken.dao.JankenDao;
-import com.example.janken.dao.JankenDetailDao;
+import com.example.janken.csvdao.JankenCsvDao;
+import com.example.janken.csvdao.JankenDetailCsvDao;
 import com.example.janken.model.Hand;
 import com.example.janken.model.JankenDetail;
 import com.example.janken.model.Result;
@@ -27,8 +27,8 @@ class AppTest {
     private static StandardInputSnatcher stdinSnatcher;
     private static StandardOutputSnatcher stdoutSnatcher;
 
-    private static JankenDao jankenDao = new JankenDao();
-    private static JankenDetailDao jankenDetailDao = new JankenDetailDao();
+    private static JankenCsvDao jankenCsvDao = new JankenCsvDao();
+    private static JankenDetailCsvDao jankenDetailCsvDao = new JankenDetailCsvDao();
 
     @BeforeAll
     static void setup() {
@@ -69,8 +69,8 @@ class AppTest {
         stdinSnatcher.inputLine(String.valueOf(player1HandValue));
         stdinSnatcher.inputLine(String.valueOf(player2HandValue));
 
-        val jankensCountBeforeTest = jankenDao.count();
-        val jankenDetailsCountBeforeTest = jankenDetailDao.count();
+        val jankensCountBeforeTest = jankenCsvDao.count();
+        val jankenDetailsCountBeforeTest = jankenDetailCsvDao.count();
 
         // 実行
 
@@ -97,13 +97,13 @@ class AppTest {
         assertEquals(expectedStdout, actualStdout, "標準出力の内容が想定通りであること");
 
         // じゃんけんデータの CSV の検証
-        assertEquals(jankensCountBeforeTest + 1, jankenDao.count(), "じゃんけんが 1 件追加されたこと");
+        assertEquals(jankensCountBeforeTest + 1, jankenCsvDao.count(), "じゃんけんが 1 件追加されたこと");
         val expectedJankenId = jankensCountBeforeTest + 1;
-        val savedJanken = jankenDao.findById(jankensCountBeforeTest + 1);
+        val savedJanken = jankenCsvDao.findById(jankensCountBeforeTest + 1);
         assertTrue(savedJanken.isPresent(), "じゃんけんが保存されていること");
 
         // じゃんけん明細データの CSV の検証
-        assertEquals(jankenDetailsCountBeforeTest + 2, jankenDetailDao.count(),
+        assertEquals(jankenDetailsCountBeforeTest + 2, jankenDetailCsvDao.count(),
                 "じゃんけん明細が 2 行件追加されたこと");
 
         val expectedJankenDetail1Id = jankenDetailsCountBeforeTest + 1;
@@ -113,7 +113,7 @@ class AppTest {
                 1L,
                 Hand.of(player1HandValue),
                 Result.of(player1ResultValue));
-        val savedJankenDetail1 = jankenDetailDao.findById(expectedJankenDetail1Id);
+        val savedJankenDetail1 = jankenDetailCsvDao.findById(expectedJankenDetail1Id);
         assertEquals(expectedJankenDetail1, savedJankenDetail1.get(),
                 "じゃんけん明細に追加された 1 件目の内容が想定通りであること");
 
@@ -124,7 +124,7 @@ class AppTest {
                 2L,
                 Hand.of(player2HandValue),
                 Result.of(player2ResultValue));
-        val savedJankenDetail2 = jankenDetailDao.findById(expectedJankenDetail2Id);
+        val savedJankenDetail2 = jankenDetailCsvDao.findById(expectedJankenDetail2Id);
         assertEquals(expectedJankenDetail2, savedJankenDetail2.get(),
                 "じゃんけん明細に追加された 2 件目の内容が想定通りであること");
     }

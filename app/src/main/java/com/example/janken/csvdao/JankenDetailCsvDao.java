@@ -1,4 +1,4 @@
-package com.example.janken.dao;
+package com.example.janken.csvdao;
 
 import com.example.janken.model.Hand;
 import com.example.janken.model.JankenDetail;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JankenDetailDao {
+public class JankenDetailCsvDao {
 
-    private static final String JANKEN_DETAILS_CSV = DaoUtils.DATA_DIR + "janken_details.csv";
+    private static final String JANKEN_DETAILS_CSV = CsvDaoUtils.DATA_DIR + "janken_details.csv";
 
     public Optional<JankenDetail> findById(long id) {
         try (val stream = Files.lines(Paths.get(JANKEN_DETAILS_CSV), StandardCharsets.UTF_8)) {
@@ -28,7 +28,7 @@ public class JankenDetailDao {
     }
 
     public long count() {
-        return DaoUtils.countFileLines(JANKEN_DETAILS_CSV);
+        return CsvDaoUtils.countFileLines(JANKEN_DETAILS_CSV);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -46,7 +46,7 @@ public class JankenDetailDao {
             for (int i = 0; i < jankenDetails.size(); i++) {
                 val jankenDetail = jankenDetails.get(i);
 
-                val jankenDetailId = DaoUtils.countFileLines(JANKEN_DETAILS_CSV) + i + 1;
+                val jankenDetailId = CsvDaoUtils.countFileLines(JANKEN_DETAILS_CSV) + i + 1;
                 val jankenDetailWithId = new JankenDetail(
                         jankenDetailId,
                         jankenDetail.getJankenId(),
@@ -68,7 +68,7 @@ public class JankenDetailDao {
     }
 
     private JankenDetail line2JankenDetail(String line) {
-        val values = line.split(DaoUtils.CSV_DELIMITER);
+        val values = line.split(CsvDaoUtils.CSV_DELIMITER);
         val jankenDetailId = Long.valueOf(values[0]);
         val jankenId = Long.valueOf(values[1]);
         val playerId = Long.valueOf(values[2]);
@@ -84,7 +84,7 @@ public class JankenDetailDao {
     }
 
     private String jankenDetail2Line(JankenDetail jankenDetail) {
-        return String.join(DaoUtils.CSV_DELIMITER,
+        return String.join(CsvDaoUtils.CSV_DELIMITER,
                 String.valueOf(jankenDetail.getId()),
                 String.valueOf(jankenDetail.getJankenId()),
                 String.valueOf(jankenDetail.getPlayerId()),
