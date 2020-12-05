@@ -7,7 +7,6 @@ import com.example.janken.service.JankenService;
 import com.example.janken.service.PlayerService;
 import lombok.val;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -23,7 +22,7 @@ public class JankenController {
     private PlayerService playerService = new PlayerService();
     private JankenService jankenService = new JankenService();
 
-    public void play() throws IOException {
+    public void play() {
         val player1 = playerService.findPlayerById(PLAYER_1_ID);
         val player2 = playerService.findPlayerById(PLAYER_2_ID);
 

@@ -5,7 +5,6 @@ import com.example.janken.dao.JankenDetailDao;
 import com.example.janken.model.*;
 import lombok.val;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,7 @@ public class JankenService {
      * じゃんけんを実行し、勝者を返します。
      */
     public Optional<Player> play(Player player1, Hand player1Hand,
-                                 Player player2, Hand player2Hand) throws IOException {
+                                 Player player2, Hand player2Hand) {
 
         // 勝敗判定
 
