@@ -1,6 +1,7 @@
 package com.example.janken.dataaccess.csvdao;
 
-import com.example.janken.dataaccess.model.Janken;
+import com.example.janken.businesslogic.dao.JankenDao;
+import com.example.janken.businesslogic.model.Janken;
 import lombok.val;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class JankenCsvDao {
+public class JankenCsvDao implements JankenDao {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static final String JANKENS_CSV = CsvDaoUtils.DATA_DIR + "jankens.csv";

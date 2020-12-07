@@ -1,8 +1,9 @@
 package com.example.janken.dataaccess.csvdao;
 
-import com.example.janken.dataaccess.model.Hand;
-import com.example.janken.dataaccess.model.JankenDetail;
-import com.example.janken.dataaccess.model.Result;
+import com.example.janken.businesslogic.dao.JankenDetailDao;
+import com.example.janken.businesslogic.model.Hand;
+import com.example.janken.businesslogic.model.JankenDetail;
+import com.example.janken.businesslogic.model.Result;
 import lombok.val;
 
 import java.io.*;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JankenDetailCsvDao {
+public class JankenDetailCsvDao implements JankenDetailDao {
 
     private static final String JANKEN_DETAILS_CSV = CsvDaoUtils.DATA_DIR + "janken_details.csv";
 

@@ -1,10 +1,11 @@
 package com.example.janken.presentation.controller;
 
-import com.example.janken.framework.View;
-import com.example.janken.dataaccess.model.Hand;
-import com.example.janken.dataaccess.model.Player;
 import com.example.janken.businesslogic.service.JankenService;
 import com.example.janken.businesslogic.service.PlayerService;
+import com.example.janken.businesslogic.model.Hand;
+import com.example.janken.businesslogic.model.Player;
+import com.example.janken.framework.ServiceLocator;
+import com.example.janken.framework.View;
 import lombok.val;
 
 import java.util.Arrays;
@@ -19,8 +20,8 @@ public class JankenController {
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
     private static final String VIEW_RESOURCE_PREFIX = "view/";
 
-    private PlayerService playerService = new PlayerService();
-    private JankenService jankenService = new JankenService();
+    private PlayerService playerService = ServiceLocator.resolve(PlayerService.class);
+    private JankenService jankenService = ServiceLocator.resolve(JankenService.class);
 
     public void play() {
         val player1 = playerService.findPlayerById(PLAYER_1_ID);

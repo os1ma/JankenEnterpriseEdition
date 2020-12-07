@@ -1,4 +1,4 @@
-package com.example.janken.dataaccess.model;
+package com.example.janken.businesslogic.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
