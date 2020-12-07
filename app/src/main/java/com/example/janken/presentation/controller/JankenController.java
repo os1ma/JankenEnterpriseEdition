@@ -1,9 +1,9 @@
 package com.example.janken.presentation.controller;
 
-import com.example.janken.businesslogic.service.JankenService;
-import com.example.janken.businesslogic.service.PlayerService;
-import com.example.janken.businesslogic.model.Hand;
-import com.example.janken.businesslogic.model.Player;
+import com.example.janken.application.service.JankenService;
+import com.example.janken.application.service.PlayerService;
+import com.example.janken.domain.model.Hand;
+import com.example.janken.domain.model.Player;
 import com.example.janken.framework.ServiceLocator;
 import com.example.janken.framework.View;
 import lombok.val;

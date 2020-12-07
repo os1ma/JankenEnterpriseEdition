@@ -1,7 +1,7 @@
-package com.example.janken.dataaccess.csvdao;
+package com.example.janken.infrastructure.csvdao;
 
-import com.example.janken.businesslogic.dao.JankenDao;
-import com.example.janken.businesslogic.model.Janken;
+import com.example.janken.domain.dao.JankenDao;
+import com.example.janken.domain.model.Janken;
 import lombok.val;
 
 import java.io.*;

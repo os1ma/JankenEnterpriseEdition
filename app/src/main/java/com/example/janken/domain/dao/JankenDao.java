@@ -1,6 +1,6 @@
-package com.example.janken.businesslogic.dao;
+package com.example.janken.domain.dao;
 
-import com.example.janken.businesslogic.model.Janken;
+import com.example.janken.domain.model.Janken;
 
 import java.util.Optional;
 

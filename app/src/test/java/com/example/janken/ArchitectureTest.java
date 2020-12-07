@@ -15,17 +15,20 @@ public class ArchitectureTest {
     static final String ROOT_PACKAGE = "com.example.janken";
 
     private static final String PRESENTATION_LAYER = ROOT_PACKAGE + ".presentation..";
-    private static final String BUSINESS_LOGIC_LAYER = ROOT_PACKAGE + ".businesslogic..";
-    private static final String DATA_ACCESS_LAYER = ROOT_PACKAGE + ".dataaccess..";
+    private static final String APPLICATION_LAYER = ROOT_PACKAGE + ".application..";
+    private static final String DOMAIN_LAYER = ROOT_PACKAGE + ".domain..";
+    private static final String INFRASTRUCTURE_LAYER = ROOT_PACKAGE + ".infrastructure..";
 
     @ArchTest
     public static final ArchRule レイヤーの依存の向きが設計通り = Architectures
             .layeredArchitecture()
             .layer(PRESENTATION_LAYER).definedBy(PRESENTATION_LAYER)
-            .layer(BUSINESS_LOGIC_LAYER).definedBy(BUSINESS_LOGIC_LAYER)
-            .layer(DATA_ACCESS_LAYER).definedBy(DATA_ACCESS_LAYER)
+            .layer(APPLICATION_LAYER).definedBy(APPLICATION_LAYER)
+            .layer(DOMAIN_LAYER).definedBy(DOMAIN_LAYER)
+            .layer(INFRASTRUCTURE_LAYER).definedBy(INFRASTRUCTURE_LAYER)
             .layer(ROOT_PACKAGE).definedBy(ROOT_PACKAGE)
             .whereLayer(PRESENTATION_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE)
-            .whereLayer(DATA_ACCESS_LAYER).mayNotBeAccessedByAnyLayer();
+            .whereLayer(APPLICATION_LAYER).mayOnlyBeAccessedByLayers(PRESENTATION_LAYER)
+            .whereLayer(INFRASTRUCTURE_LAYER).mayNotBeAccessedByAnyLayer();
 
 }

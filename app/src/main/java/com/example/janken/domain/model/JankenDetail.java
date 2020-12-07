@@ -1,4 +1,4 @@
-package com.example.janken.businesslogic.model;
+package com.example.janken.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -1,8 +1,8 @@
-package com.example.janken.businesslogic.service;
+package com.example.janken.application.service;
 
-import com.example.janken.businesslogic.dao.JankenDao;
-import com.example.janken.businesslogic.dao.JankenDetailDao;
-import com.example.janken.businesslogic.model.*;
+import com.example.janken.domain.dao.JankenDao;
+import com.example.janken.domain.dao.JankenDetailDao;
+import com.example.janken.domain.model.*;
 import com.example.janken.framework.ServiceLocator;
 import lombok.val;
 

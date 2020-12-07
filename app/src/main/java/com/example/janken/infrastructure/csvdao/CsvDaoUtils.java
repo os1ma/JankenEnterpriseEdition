@@ -1,4 +1,4 @@
-package com.example.janken.dataaccess.csvdao;
+package com.example.janken.infrastructure.csvdao;
 
 import lombok.val;
 

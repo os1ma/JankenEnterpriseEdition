@@ -1,10 +1,10 @@
 package com.example.janken;
 
-import com.example.janken.dataaccess.csvdao.JankenCsvDao;
-import com.example.janken.dataaccess.csvdao.JankenDetailCsvDao;
-import com.example.janken.businesslogic.model.Hand;
-import com.example.janken.businesslogic.model.JankenDetail;
-import com.example.janken.businesslogic.model.Result;
+import com.example.janken.infrastructure.csvdao.JankenCsvDao;
+import com.example.janken.infrastructure.csvdao.JankenDetailCsvDao;
+import com.example.janken.domain.model.Hand;
+import com.example.janken.domain.model.JankenDetail;
+import com.example.janken.domain.model.Result;
 import lombok.val;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

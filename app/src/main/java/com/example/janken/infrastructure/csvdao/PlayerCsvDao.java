@@ -1,7 +1,7 @@
-package com.example.janken.dataaccess.csvdao;
+package com.example.janken.infrastructure.csvdao;
 
-import com.example.janken.businesslogic.dao.PlayerDao;
-import com.example.janken.businesslogic.model.Player;
+import com.example.janken.domain.dao.PlayerDao;
+import com.example.janken.domain.model.Player;
 import lombok.val;
 
 import java.io.IOException;
