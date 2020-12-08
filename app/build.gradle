@@ -13,6 +13,9 @@ dependencies {
     // Velocity が依存する commons-collections:3.2.1 から明示的にバージョンアップ (CVE-2015-6420, CVE-2017-15708 の対応)
     implementation 'commons-collections:commons-collections:3.2.2'
 
+    // Database
+    implementation 'mysql:mysql-connector-java:8.0.22'
+
     // Development tools
     def lombokVersion = '1.18.16'
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
