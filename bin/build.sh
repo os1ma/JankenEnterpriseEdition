@@ -37,10 +37,7 @@ is_mysql_container_ready() {
 error_occurred_in_service() {
   local target_service="$1"
 
-  local error_log_count="$(docker-compose logs "${target_service}" |
-    grep 'ERROR' |
-    wc -l)"
-
+  local error_log_count="$(get_log_count_in_service "${target_service}" 'ERROR')"
   [[ error_log_count -gt 0 ]]
 }
 
