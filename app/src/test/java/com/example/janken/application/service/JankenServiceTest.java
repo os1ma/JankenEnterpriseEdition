@@ -5,11 +5,11 @@ import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.model.Player;
-import com.example.janken.registry.ServiceLocator;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
+import com.example.janken.registry.ServiceLocator;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class JankenServiceTest {
         val player1Hand = Hand.STONE;
         val player2Hand = Hand.STONE;
 
-        try (val tx = tm.startTransaction()) {
+        tm.transactional(tx -> {
 
             val jankenCountBeforeTest = jankenDao.count(tx);
 
@@ -60,7 +60,7 @@ class JankenServiceTest {
             val jankenCountAfterTest = jankenDao.count(tx);
             assertEquals(jankenCountBeforeTest, jankenCountAfterTest, "じゃんけんの件数が増えていない");
 
-        }
+        });
     }
 
 }

@@ -70,16 +70,11 @@ class AppTest {
 
         // 準備
 
-        long jankensCountBeforeTest;
-        long jankenDetailsCountBeforeTest;
-        try (val tx = tm.startTransaction()) {
+        stdinSnatcher.inputLine(String.valueOf(player1HandValue));
+        stdinSnatcher.inputLine(String.valueOf(player2HandValue));
 
-            stdinSnatcher.inputLine(String.valueOf(player1HandValue));
-            stdinSnatcher.inputLine(String.valueOf(player2HandValue));
-
-            jankensCountBeforeTest = jankenDao.count(tx);
-            jankenDetailsCountBeforeTest = jankenDetailDao.count(tx);
-        }
+        long jankensCountBeforeTest = tm.transactional(jankenDao::count);
+        long jankenDetailsCountBeforeTest = tm.transactional(jankenDetailDao::count);
 
         // 実行
 
@@ -88,7 +83,7 @@ class AppTest {
 
         // 検証
 
-        try (val tx = tm.startTransaction()) {
+        tm.transactional(tx -> {
 
             // 標準出力の検証
             val actualStdout = stdoutSnatcher.readAllLines();
@@ -137,7 +132,7 @@ class AppTest {
                 assertEquals(player2ResultValue, savedJankenDetails2.getResult().getValue());
             }
 
-        }
+        });
     }
 
     @ParameterizedTest
