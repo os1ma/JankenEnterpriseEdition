@@ -5,14 +5,12 @@ import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.model.Result;
 import com.example.janken.domain.transaction.Transaction;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,42 +47,30 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
             return new ArrayList<>();
         }
 
-        val command = INSERT_COMMAND + jankenDetails.stream()
+        val sql = INSERT_COMMAND + jankenDetails.stream()
                 .map(jd -> INSERT_COMMAND_VALUE_CLAUSE)
                 .reduce((l, r) -> l + "," + r)
                 .get();
 
-        val conn = ((JDBCTransaction) tx).getConn();
-
-        try (val stmt = conn.prepareStatement(command, Statement.RETURN_GENERATED_KEYS)) {
-
-            for (int i = 0; i < jankenDetails.size(); i++) {
-                val jd = jankenDetails.get(i);
-                val placeholderOffset = 4 * i;
-
-                stmt.setLong(placeholderOffset + 1, jd.getJankenId());
-                stmt.setLong(placeholderOffset + 2, jd.getPlayerId());
-                stmt.setInt(placeholderOffset + 3, jd.getHand().getValue());
-                stmt.setInt(placeholderOffset + 4, jd.getResult().getValue());
-            }
-
-            stmt.executeUpdate();
-
-            val jankenDetailWithIds = new ArrayList<JankenDetail>();
-            try (val rs = stmt.getGeneratedKeys()) {
-                for (JankenDetail jd : jankenDetails) {
-                    rs.next();
-                    val id = rs.getLong(1);
-
-                    val jankenDetailWithId = new JankenDetail(id, jd.getJankenId(), jd.getPlayerId(), jd.getHand(), jd.getResult());
-                    jankenDetailWithIds.add(jankenDetailWithId);
-                }
-            }
-            return jankenDetailWithIds;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        val params = new ArrayList<Object>();
+        for (val jd : jankenDetails) {
+            params.add(jd.getJankenId());
+            params.add(jd.getPlayerId());
+            params.add(jd.getHand().getValue());
+            params.add(jd.getResult().getValue());
         }
+
+        val ids = simpleJDBCWrapper.insertAndReturnKeys(tx, sql, params.toArray());
+
+        val jankenDetailWithIds = new ArrayList<JankenDetail>();
+        for (int i = 0; i < jankenDetails.size(); i++) {
+            val jd = jankenDetails.get(i);
+            val id = ids.get(i);
+
+            val jankenDetailWithId = new JankenDetail(id, jd.getJankenId(), jd.getPlayerId(), jd.getHand(), jd.getResult());
+            jankenDetailWithIds.add(jankenDetailWithId);
+        }
+        return jankenDetailWithIds;
     }
 
 }

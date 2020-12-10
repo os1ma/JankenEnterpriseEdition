@@ -3,14 +3,12 @@ package com.example.janken.infrastructure.mysqldao;
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.model.Janken;
 import com.example.janken.domain.transaction.Transaction;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -42,24 +40,8 @@ public class JankenMySQLDao implements JankenDao {
 
     @Override
     public Janken insert(Transaction tx, Janken janken) {
-        val conn = ((JDBCTransaction) tx).getConn();
-
-        try (val stmt = conn.prepareStatement(INSERT_COMMAND, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setTimestamp(1, Timestamp.valueOf(janken.getPlayedAt()));
-
-            stmt.executeUpdate();
-
-            try (val rs = stmt.getGeneratedKeys()) {
-                rs.next();
-                val id = rs.getLong(1);
-
-                return new Janken(id, janken.getPlayedAt());
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        val ids = simpleJDBCWrapper.insertAndReturnKeys(tx, INSERT_COMMAND, Timestamp.valueOf(janken.getPlayedAt()));
+        return new Janken(ids.get(0), janken.getPlayedAt());
     }
 
 }
