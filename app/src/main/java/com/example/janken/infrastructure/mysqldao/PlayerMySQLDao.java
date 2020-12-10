@@ -2,9 +2,10 @@ package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.dao.PlayerDao;
 import com.example.janken.domain.model.Player;
+import com.example.janken.framework.Transaction;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import lombok.val;
 
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,10 +16,11 @@ public class PlayerMySQLDao implements PlayerDao {
     private static final String SELECT_WHERE_ID_EQUALS_QUERY = "SELECT id, name FROM players WHERE id = ?";
 
     @Override
-    public Player findPlayerById(long playerId) {
-        try (val conn = DriverManager.getConnection(MySQLDaoConfig.MYSQL_URL,
-                MySQLDaoConfig.MYSQL_USER, MySQLDaoConfig.MYSQL_PASSWORD);
-             val stmt = conn.prepareStatement(SELECT_WHERE_ID_EQUALS_QUERY)) {
+    public Player findPlayerById(Transaction tx, long playerId) {
+        val conn = ((JDBCTransaction) tx).getConn();
+
+        try (val stmt = conn.prepareStatement(SELECT_WHERE_ID_EQUALS_QUERY)) {
+
             stmt.setLong(1, playerId);
 
             try (val rs = stmt.executeQuery()) {

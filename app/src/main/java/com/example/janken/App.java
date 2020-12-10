@@ -6,6 +6,8 @@ import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.dao.PlayerDao;
 import com.example.janken.framework.ServiceLocator;
+import com.example.janken.framework.TransactionManager;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
@@ -16,6 +18,8 @@ public class App {
     public static void main(String[] args) {
 
         // 依存解決の設定
+
+        ServiceLocator.register(TransactionManager.class, JDBCTransactionManager.class);
 
         ServiceLocator.register(JankenController.class, JankenController.class);
 

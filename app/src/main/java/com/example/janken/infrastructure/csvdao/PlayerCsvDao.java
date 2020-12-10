@@ -2,6 +2,7 @@ package com.example.janken.infrastructure.csvdao;
 
 import com.example.janken.domain.dao.PlayerDao;
 import com.example.janken.domain.model.Player;
+import com.example.janken.framework.Transaction;
 import lombok.val;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class PlayerCsvDao implements PlayerDao {
 
     private static final String PLAYERS_CSV = CsvDaoUtils.DATA_DIR + "players.csv";
 
-    public Player findPlayerById(long playerId) {
+    public Player findPlayerById(Transaction tx, long playerId) {
         try (val stream = Files.lines(Paths.get(PLAYERS_CSV), StandardCharsets.UTF_8)) {
             return stream
                     .map(this::line2Player)

@@ -2,24 +2,49 @@ package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.model.Janken;
+import com.example.janken.framework.Transaction;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import lombok.val;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class JankenMySQLDao implements JankenDao {
 
-    private static final String SELECT_WHERE_ID_EQUALS_QUERY = "SELECT id, playedAt FROM jankens WHERE id = ?";
+    private static final String SELECT_FROM_CALUSE = "SELECT id, playedAt FROM jankens ";
+
+    private static final String SELECT_ALL_ORDER_BY_ID_QUERY = SELECT_FROM_CALUSE + "ORDER BY id";
+    private static final String SELECT_WHERE_ID_EQUALS_QUERY = SELECT_FROM_CALUSE + "WHERE id = ?";
+
     private static final String COUNT_QUERY = "SELECT COUNT(*) FROM jankens";
+
     private static final String INSERT_COMMAND = "INSERT INTO jankens (playedAt) VALUES (?)";
 
     @Override
-    public Optional<Janken> findById(long id) {
-        try (val conn = DriverManager.getConnection(MySQLDaoConfig.MYSQL_URL,
-                MySQLDaoConfig.MYSQL_USER, MySQLDaoConfig.MYSQL_PASSWORD);
-             val stmt = conn.prepareStatement(SELECT_WHERE_ID_EQUALS_QUERY)) {
+    public List<Janken> findAllOrderById(Transaction tx) {
+        val conn = ((JDBCTransaction) tx).getConn();
+
+        try (val stmt = conn.prepareStatement(SELECT_ALL_ORDER_BY_ID_QUERY)) {
+
+            try (val rs = stmt.executeQuery()) {
+                return resultSet2Jankens(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<Janken> findById(Transaction tx, long id) {
+        val conn = ((JDBCTransaction) tx).getConn();
+
+        try (val stmt = conn.prepareStatement(SELECT_WHERE_ID_EQUALS_QUERY)) {
 
             stmt.setLong(1, id);
 
@@ -33,10 +58,10 @@ public class JankenMySQLDao implements JankenDao {
     }
 
     @Override
-    public long count() {
-        try (val conn = DriverManager.getConnection(MySQLDaoConfig.MYSQL_URL,
-                MySQLDaoConfig.MYSQL_USER, MySQLDaoConfig.MYSQL_PASSWORD);
-             val stmt = conn.prepareStatement(COUNT_QUERY)) {
+    public long count(Transaction tx) {
+        val conn = ((JDBCTransaction) tx).getConn();
+
+        try (val stmt = conn.prepareStatement(COUNT_QUERY)) {
 
             try (val rs = stmt.executeQuery()) {
                 rs.next();
@@ -49,10 +74,10 @@ public class JankenMySQLDao implements JankenDao {
     }
 
     @Override
-    public Janken insert(Janken janken) {
-        try (val conn = DriverManager.getConnection(MySQLDaoConfig.MYSQL_URL,
-                MySQLDaoConfig.MYSQL_USER, MySQLDaoConfig.MYSQL_PASSWORD);
-             val stmt = conn.prepareStatement(INSERT_COMMAND, Statement.RETURN_GENERATED_KEYS)) {
+    public Janken insert(Transaction tx, Janken janken) {
+        val conn = ((JDBCTransaction) tx).getConn();
+
+        try (val stmt = conn.prepareStatement(INSERT_COMMAND, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setTimestamp(1, Timestamp.valueOf(janken.getPlayedAt()));
 

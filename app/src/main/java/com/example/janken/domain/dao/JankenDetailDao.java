@@ -1,16 +1,19 @@
 package com.example.janken.domain.dao;
 
 import com.example.janken.domain.model.JankenDetail;
+import com.example.janken.framework.Transaction;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface JankenDetailDao {
 
-    Optional<JankenDetail> findById(long id);
+    List<JankenDetail> findAllOrderById(Transaction tx);
 
-    long count();
+    Optional<JankenDetail> findById(Transaction tx, long id);
 
-    List<JankenDetail> insertAll(List<JankenDetail> jankenDetails);
+    long count(Transaction tx);
+
+    List<JankenDetail> insertAll(Transaction tx, List<JankenDetail> jankenDetails);
 
 }

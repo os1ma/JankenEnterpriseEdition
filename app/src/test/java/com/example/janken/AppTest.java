@@ -2,9 +2,8 @@ package com.example.janken;
 
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
-import com.example.janken.domain.model.Hand;
-import com.example.janken.domain.model.JankenDetail;
-import com.example.janken.domain.model.Result;
+import com.example.janken.framework.TransactionManager;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import lombok.val;
@@ -18,9 +17,11 @@ import java.io.*;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
+
+    private static final long PLAYER_1_ID = 1;
+    private static final long PLAYER_2_ID = 2;
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -29,6 +30,7 @@ class AppTest {
     private static StandardInputSnatcher stdinSnatcher;
     private static StandardOutputSnatcher stdoutSnatcher;
 
+    private static TransactionManager tm = new JDBCTransactionManager();
     private static JankenDao jankenDao = new JankenMySQLDao();
     private static JankenDetailDao jankenDetailDao = new JankenDetailMySQLDao();
 
@@ -64,15 +66,20 @@ class AppTest {
                                   String player2HandName,
                                   String resultMessage,
                                   int player1ResultValue,
-                                  int player2ResultValue) throws IOException {
+                                  int player2ResultValue) {
 
         // 準備
 
-        stdinSnatcher.inputLine(String.valueOf(player1HandValue));
-        stdinSnatcher.inputLine(String.valueOf(player2HandValue));
+        long jankensCountBeforeTest;
+        long jankenDetailsCountBeforeTest;
+        try (val tx = tm.startTransaction()) {
 
-        val jankensCountBeforeTest = jankenDao.count();
-        val jankenDetailsCountBeforeTest = jankenDetailDao.count();
+            stdinSnatcher.inputLine(String.valueOf(player1HandValue));
+            stdinSnatcher.inputLine(String.valueOf(player2HandValue));
+
+            jankensCountBeforeTest = jankenDao.count(tx);
+            jankenDetailsCountBeforeTest = jankenDetailDao.count(tx);
+        }
 
         // 実行
 
@@ -81,54 +88,56 @@ class AppTest {
 
         // 検証
 
-        // 標準出力の検証
-        val actualStdout = stdoutSnatcher.readAllLines();
-        val expectedStdout = String.join(LINE_SEPARATOR, Arrays.asList(
-                "STONE: 0",
-                "PAPER: 1",
-                "SCISSORS: 2",
-                "Please select Alice hand:",
-                "STONE: 0",
-                "PAPER: 1",
-                "SCISSORS: 2",
-                "Please select Bob hand:",
-                "Alice selected " + player1HandName,
-                "Bob selected " + player2HandName,
-                resultMessage
-        ));
-        assertEquals(expectedStdout, actualStdout, "標準出力の内容が想定通りであること");
+        try (val tx = tm.startTransaction()) {
 
-        // じゃんけんデータの CSV の検証
-        assertEquals(jankensCountBeforeTest + 1, jankenDao.count(), "じゃんけんが 1 件追加されたこと");
-        val expectedJankenId = jankensCountBeforeTest + 1;
-        val savedJanken = jankenDao.findById(jankensCountBeforeTest + 1);
-        assertTrue(savedJanken.isPresent(), "じゃんけんが保存されていること");
+            // 標準出力の検証
+            val actualStdout = stdoutSnatcher.readAllLines();
+            val expectedStdout = String.join(LINE_SEPARATOR, Arrays.asList(
+                    "STONE: 0",
+                    "PAPER: 1",
+                    "SCISSORS: 2",
+                    "Please select Alice hand:",
+                    "STONE: 0",
+                    "PAPER: 1",
+                    "SCISSORS: 2",
+                    "Please select Bob hand:",
+                    "Alice selected " + player1HandName,
+                    "Bob selected " + player2HandName,
+                    resultMessage
+            ));
+            assertEquals(expectedStdout, actualStdout, "標準出力の内容が想定通りであること");
 
-        // じゃんけん明細データの CSV の検証
-        assertEquals(jankenDetailsCountBeforeTest + 2, jankenDetailDao.count(),
-                "じゃんけん明細が 2 行件追加されたこと");
+            // じゃんけんデータの検証
+            assertEquals(jankensCountBeforeTest + 1, jankenDao.count(tx), "じゃんけんが 1 件追加されたこと");
 
-        val expectedJankenDetail1Id = jankenDetailsCountBeforeTest + 1;
-        val expectedJankenDetail1 = new JankenDetail(
-                expectedJankenDetail1Id,
-                expectedJankenId,
-                1L,
-                Hand.of(player1HandValue),
-                Result.of(player1ResultValue));
-        val savedJankenDetail1 = jankenDetailDao.findById(expectedJankenDetail1Id);
-        assertEquals(expectedJankenDetail1, savedJankenDetail1.get(),
-                "じゃんけん明細に追加された 1 件目の内容が想定通りであること");
+            val savedJankens = jankenDao.findAllOrderById(tx);
+            val savedJanken = savedJankens.get(savedJankens.size() - 1);
+            val savedJankenId = savedJanken.getId();
 
-        val expectedJankenDetail2Id = jankenDetailsCountBeforeTest + 2;
-        val expectedJankenDetail2 = new JankenDetail(
-                expectedJankenDetail2Id,
-                expectedJankenId,
-                2L,
-                Hand.of(player2HandValue),
-                Result.of(player2ResultValue));
-        val savedJankenDetail2 = jankenDetailDao.findById(expectedJankenDetail2Id);
-        assertEquals(expectedJankenDetail2, savedJankenDetail2.get(),
-                "じゃんけん明細に追加された 2 件目の内容が想定通りであること");
+            // じゃんけん明細データの検証
+            assertEquals(jankenDetailsCountBeforeTest + 2, jankenDetailDao.count(tx),
+                    "じゃんけん明細が 2 件追加されたこと");
+
+            // 自動採番される ID 以外の値を検証
+            val savedJankenDetails = jankenDetailDao.findAllOrderById(tx);
+
+            {
+                val savedJankenDetails1 = savedJankenDetails.get(savedJankenDetails.size() - 2);
+                assertEquals(savedJankenId, savedJankenDetails1.getJankenId());
+                assertEquals(PLAYER_1_ID, savedJankenDetails1.getPlayerId());
+                assertEquals(player1HandValue, savedJankenDetails1.getHand().getValue());
+                assertEquals(player1ResultValue, savedJankenDetails1.getResult().getValue());
+            }
+
+            {
+                val savedJankenDetails2 = savedJankenDetails.get(savedJankenDetails.size() - 1);
+                assertEquals(savedJankenId, savedJankenDetails2.getJankenId());
+                assertEquals(PLAYER_2_ID, savedJankenDetails2.getPlayerId());
+                assertEquals(player2HandValue, savedJankenDetails2.getHand().getValue());
+                assertEquals(player2ResultValue, savedJankenDetails2.getResult().getValue());
+            }
+
+        }
     }
 
     @ParameterizedTest
@@ -140,7 +149,7 @@ class AppTest {
             "",
             " "
     })
-    void 不正な入力で再入力が促される(String invalidInput) throws IOException {
+    void 不正な入力で再入力が促される(String invalidInput) {
 
         stdinSnatcher.inputLine(String.valueOf(invalidInput));
 
