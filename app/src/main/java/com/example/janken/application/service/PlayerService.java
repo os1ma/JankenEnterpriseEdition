@@ -2,8 +2,8 @@ package com.example.janken.application.service;
 
 import com.example.janken.domain.dao.PlayerDao;
 import com.example.janken.domain.model.Player;
-import com.example.janken.framework.ServiceLocator;
-import com.example.janken.framework.TransactionManager;
+import com.example.janken.registry.ServiceLocator;
+import com.example.janken.domain.transaction.TransactionManager;
 import lombok.val;
 
 public class PlayerService {

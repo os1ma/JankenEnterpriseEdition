@@ -3,8 +3,8 @@ package com.example.janken.application.service;
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.model.*;
-import com.example.janken.framework.ServiceLocator;
-import com.example.janken.framework.TransactionManager;
+import com.example.janken.registry.ServiceLocator;
+import com.example.janken.domain.transaction.TransactionManager;
 import lombok.val;
 
 import java.time.LocalDateTime;

@@ -4,8 +4,8 @@ import com.example.janken.application.service.JankenService;
 import com.example.janken.application.service.PlayerService;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.Player;
-import com.example.janken.framework.ServiceLocator;
-import com.example.janken.framework.View;
+import com.example.janken.registry.ServiceLocator;
+import com.example.janken.presentation.view.View;
 import lombok.val;
 
 import java.util.Arrays;

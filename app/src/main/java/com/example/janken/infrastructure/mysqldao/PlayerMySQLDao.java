@@ -2,7 +2,7 @@ package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.dao.PlayerDao;
 import com.example.janken.domain.model.Player;
-import com.example.janken.framework.Transaction;
+import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import lombok.val;
 

@@ -4,7 +4,7 @@ import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.model.Result;
-import com.example.janken.framework.Transaction;
+import com.example.janken.domain.transaction.Transaction;
 import lombok.val;
 
 import java.io.*;

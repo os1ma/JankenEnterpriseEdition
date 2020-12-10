@@ -1,6 +1,6 @@
 package com.example.janken.infrastructure.jdbctransaction;
 
-import com.example.janken.framework.Transaction;
+import com.example.janken.domain.transaction.Transaction;
 import lombok.Getter;
 
 import java.sql.Connection;

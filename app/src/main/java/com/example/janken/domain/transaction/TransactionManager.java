@@ -1,4 +1,4 @@
-package com.example.janken.framework;
+package com.example.janken.domain.transaction;
 
 public interface TransactionManager {
 
