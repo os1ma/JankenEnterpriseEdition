@@ -3,8 +3,8 @@ package com.example.janken.application.service;
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.model.*;
-import com.example.janken.registry.ServiceLocator;
 import com.example.janken.domain.transaction.TransactionManager;
+import com.example.janken.registry.ServiceLocator;
 import lombok.val;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class JankenService {
     public Optional<Player> play(Player player1, Hand player1Hand,
                                  Player player2, Hand player2Hand) {
 
-        try (val tx = tm.startTransaction()) {
+        return tm.transactional(tx -> {
 
             // 勝敗判定
 
@@ -92,8 +92,6 @@ public class JankenService {
 
             jankenDetailDao.insertAll(tx, jankenDetails);
 
-            tx.commit();
-
             // 勝者を返却
 
             if (player1Result.equals(Result.WIN)) {
@@ -103,8 +101,8 @@ public class JankenService {
             } else {
                 return Optional.empty();
             }
+        });
 
-        }
     }
 
 }
