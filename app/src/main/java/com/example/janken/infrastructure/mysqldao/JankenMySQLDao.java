@@ -3,6 +3,7 @@ package com.example.janken.infrastructure.mysqldao;
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.model.Janken;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
@@ -19,18 +20,19 @@ public class JankenMySQLDao implements JankenDao {
     private static final String INSERT_COMMAND = "INSERT INTO jankens (playedAt) VALUES (?)";
 
     private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
-    private JankenMapper mapper = new JankenMapper();
+    private JankenRowMapper rowMapper = new JankenRowMapper();
+    private JankenInsertMapper insertMapper = new JankenInsertMapper();
 
     @Override
     public List<Janken> findAllOrderById(Transaction tx) {
         val sql = SELECT_FROM_CALUSE + "ORDER BY id";
-        return simpleJDBCWrapper.findList(tx, mapper, sql);
+        return simpleJDBCWrapper.findList(tx, rowMapper, sql);
     }
 
     @Override
     public Optional<Janken> findById(Transaction tx, long id) {
         val sql = SELECT_FROM_CALUSE + "WHERE id = ?";
-        return simpleJDBCWrapper.findFirst(tx, mapper, sql, id);
+        return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, id);
     }
 
     @Override
@@ -40,13 +42,12 @@ public class JankenMySQLDao implements JankenDao {
 
     @Override
     public Janken insert(Transaction tx, Janken janken) {
-        val ids = simpleJDBCWrapper.insertAndReturnKeys(tx, INSERT_COMMAND, Timestamp.valueOf(janken.getPlayedAt()));
-        return new Janken(ids.get(0), janken.getPlayedAt());
+        return simpleJDBCWrapper.insertOneAndReturnWithKey(tx, insertMapper, INSERT_COMMAND, janken);
     }
 
 }
 
-class JankenMapper implements RowMapper<Janken> {
+class JankenRowMapper implements RowMapper<Janken> {
 
     @Override
     public Janken map(ResultSet rs) throws SQLException {
@@ -54,6 +55,22 @@ class JankenMapper implements RowMapper<Janken> {
         val playedAt = rs.getTimestamp(2).toLocalDateTime();
 
         return new Janken(id, playedAt);
+    }
+
+}
+
+class JankenInsertMapper implements InsertMapper<Janken> {
+
+    @Override
+    public Object[] object2InsertParams(Janken object) {
+        return new Object[]{
+                Timestamp.valueOf(object.getPlayedAt())
+        };
+    }
+
+    @Override
+    public Janken zipWithKey(long key, Janken objectWithoutKey) {
+        return new Janken(key, objectWithoutKey.getPlayedAt());
     }
 
 }

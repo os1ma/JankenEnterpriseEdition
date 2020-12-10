@@ -15,17 +15,17 @@ public class PlayerMySQLDao implements PlayerDao {
     private static final String SELECT_FROM_CLAUSE = "SELECT id, name FROM players ";
 
     private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
-    private PlayerMapper mapper = new PlayerMapper();
+    private PlayerRowMapper rowMapper = new PlayerRowMapper();
 
     @Override
     public Player findPlayerById(Transaction tx, long playerId) {
         val sql = SELECT_FROM_CLAUSE + "WHERE id = ?";
-        return simpleJDBCWrapper.findFirst(tx, mapper, sql, playerId).get();
+        return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, playerId).get();
     }
 
 }
 
-class PlayerMapper implements RowMapper<Player> {
+class PlayerRowMapper implements RowMapper<Player> {
 
     @Override
     public Player map(ResultSet rs) throws SQLException {
