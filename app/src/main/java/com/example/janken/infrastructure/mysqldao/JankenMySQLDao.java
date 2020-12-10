@@ -62,10 +62,8 @@ class JankenRowMapper implements RowMapper<Janken> {
 class JankenInsertMapper implements InsertMapper<Janken> {
 
     @Override
-    public Object[] object2InsertParams(Janken object) {
-        return new Object[]{
-                Timestamp.valueOf(object.getPlayedAt())
-        };
+    public List<Object> object2InsertParams(Janken object) {
+        return List.of(Timestamp.valueOf(object.getPlayedAt()));
     }
 
     @Override

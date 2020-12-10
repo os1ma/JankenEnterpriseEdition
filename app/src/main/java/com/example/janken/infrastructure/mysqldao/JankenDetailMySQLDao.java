@@ -77,12 +77,12 @@ class JankenDetailRowMapper implements RowMapper<JankenDetail> {
 class JankenDetailInsertMapper implements InsertMapper<JankenDetail> {
 
     @Override
-    public Object[] object2InsertParams(JankenDetail object) {
-        return new Object[]{
+    public List<Object> object2InsertParams(JankenDetail object) {
+        return List.of(
                 object.getJankenId(),
                 object.getPlayerId(),
                 object.getHand().getValue(),
-                object.getResult().getValue()};
+                object.getResult().getValue());
     }
 
     @Override

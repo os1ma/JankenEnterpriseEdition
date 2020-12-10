@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +90,7 @@ public class SimpleJDBCWrapper {
 
         val params = objects.stream()
                 .map(mapper::object2InsertParams)
-                .flatMap(Arrays::stream)
+                .flatMap(List::stream)
                 .toArray();
 
         try (val stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
