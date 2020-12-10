@@ -6,6 +6,8 @@ import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.model.Result;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
+import com.example.janken.infrastructure.jdbctransaction.RowMapper;
+import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
 
 import java.sql.ResultSet;
@@ -18,61 +20,27 @@ import java.util.Optional;
 public class JankenDetailMySQLDao implements JankenDetailDao {
 
     private static final String SELECT_FROM_CLAUSE = "SELECT id, janken_id, player_id, hand, result FROM janken_details ";
-
-    private static final String SELECT_ALL_ORDER_BY_ID_QUERY = SELECT_FROM_CLAUSE + "ORDER BY id";
-    private static final String SELECT_WHERE_ID_EQUALS_QUERY = SELECT_FROM_CLAUSE + "WHERE id = ?";
-
-    private static final String COUNT_QUERY = "SELECT COUNT(*) FROM janken_details";
-
     private static final String INSERT_COMMAND = "INSERT INTO janken_details (janken_id, player_id, hand, result) VALUES ";
     private static final String INSERT_COMMAND_VALUE_CLAUSE = "(?, ?, ?, ?)";
 
+    private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
+    private JankenDetailMapper mapper = new JankenDetailMapper();
+
     @Override
     public List<JankenDetail> findAllOrderById(Transaction tx) {
-        val conn = ((JDBCTransaction) tx).getConn();
-
-        try (val stmt = conn.prepareStatement(SELECT_ALL_ORDER_BY_ID_QUERY)) {
-
-            try (val rs = stmt.executeQuery()) {
-                return resultSet2JankenDetails(rs);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        val sql = SELECT_FROM_CLAUSE + "ORDER BY id";
+        return simpleJDBCWrapper.findList(tx, mapper, sql);
     }
 
     @Override
     public Optional<JankenDetail> findById(Transaction tx, long id) {
-        val conn = ((JDBCTransaction) tx).getConn();
-
-        try (val stmt = conn.prepareStatement(SELECT_WHERE_ID_EQUALS_QUERY)) {
-
-            stmt.setLong(1, id);
-
-            try (val rs = stmt.executeQuery()) {
-                return resultSet2JankenDetails(rs).stream().findFirst();
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        val sql = SELECT_FROM_CLAUSE + "WHERE id = ?";
+        return simpleJDBCWrapper.findFirst(tx, mapper, sql, id);
     }
 
     @Override
     public long count(Transaction tx) {
-        val conn = ((JDBCTransaction) tx).getConn();
-
-        try (val stmt = conn.prepareStatement(COUNT_QUERY)) {
-
-            try (val rs = stmt.executeQuery()) {
-                rs.next();
-                return rs.getLong(1);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return simpleJDBCWrapper.count(tx, "janken_details");
     }
 
     @Override
@@ -119,16 +87,12 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
         }
     }
 
-    private List<JankenDetail> resultSet2JankenDetails(ResultSet rs) throws SQLException {
-        val list = new ArrayList<JankenDetail>();
-        while (rs.next()) {
-            val jankenDetail = resultSet2JankenDetail(rs);
-            list.add(jankenDetail);
-        }
-        return list;
-    }
+}
 
-    private JankenDetail resultSet2JankenDetail(ResultSet rs) throws SQLException {
+class JankenDetailMapper implements RowMapper<JankenDetail> {
+
+    @Override
+    public JankenDetail map(ResultSet rs) throws SQLException {
         val id = rs.getLong(1);
         val jankenId = rs.getLong(2);
         val playerId = rs.getLong(3);
