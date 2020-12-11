@@ -53,10 +53,12 @@ public class Janken {
     }
 
     public Optional<Long> winnerPlayerId() {
-        if (detail1.getResult().equals(Result.WIN)) {
+        if (detail1.resultIsWin()) {
             return Optional.of(detail1.getPlayerId());
-        } else if (detail2.getResult().equals(Result.WIN)) {
+
+        } else if (detail2.resultIsWin()) {
             return Optional.of(detail2.getPlayerId());
+
         } else {
             return Optional.empty();
         }

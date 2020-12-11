@@ -15,4 +15,9 @@ public class JankenDetail {
     private Long playerId;
     private Hand hand;
     private Result result;
+
+    public boolean resultIsWin() {
+        return result.equals(Result.WIN);
+    }
+
 }
