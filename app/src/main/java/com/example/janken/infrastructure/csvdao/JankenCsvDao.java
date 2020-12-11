@@ -2,6 +2,7 @@ package com.example.janken.infrastructure.csvdao;
 
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.model.Janken;
+import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
 import lombok.val;
 
@@ -56,7 +57,12 @@ public class JankenCsvDao implements JankenDao {
             jankensCsv.createNewFile();
 
             val jankenId = CsvDaoUtils.countFileLines(JANKENS_CSV) + 1;
-            val jankenWithId = new Janken(jankenId, janken.getPlayedAt());
+
+            val detail1 = janken.getDetail1();
+            val detail1WithId = new JankenDetail(null, jankenId, detail1.getPlayerId(), detail1.getHand(), detail1.getResult());
+            val detail2 = janken.getDetail2();
+            val detail2WithId = new JankenDetail(null, jankenId, detail2.getPlayerId(), detail2.getHand(), detail2.getResult());
+            val jankenWithId = new Janken(jankenId, janken.getPlayedAt(), detail1WithId, detail2WithId);
 
             val line = janken2Line(jankenWithId);
             pw.println(line);
@@ -72,7 +78,7 @@ public class JankenCsvDao implements JankenDao {
         val jankenId = Long.valueOf(values[0]);
         val playedAt = LocalDateTime.parse(values[1], DATE_TIME_FORMATTER);
 
-        return new Janken(jankenId, playedAt);
+        return new Janken(jankenId, playedAt, null, null);
     }
 
     private String janken2Line(Janken janken) {

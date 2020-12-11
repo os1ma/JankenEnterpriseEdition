@@ -4,8 +4,8 @@ import com.example.janken.application.service.JankenService;
 import com.example.janken.application.service.PlayerService;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.Player;
-import com.example.janken.registry.ServiceLocator;
 import com.example.janken.presentation.view.View;
+import com.example.janken.registry.ServiceLocator;
 import lombok.val;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class JankenController {
         showHandWithName(player1Hand, player1);
         showHandWithName(player2Hand, player2);
 
-        val maybeWinner = jankenService.play(player1, player1Hand, player2, player2Hand);
+        val maybeWinner = jankenService.play(PLAYER_1_ID, player1Hand, PLAYER_2_ID, player2Hand);
 
         new View(VIEW_RESOURCE_PREFIX + "result.vm")
                 .with("winner", maybeWinner.orElse(null))

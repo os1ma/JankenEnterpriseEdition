@@ -4,7 +4,6 @@ import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.JankenDetail;
-import com.example.janken.domain.model.Player;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
@@ -35,32 +34,23 @@ class JankenServiceTest {
         val service = new JankenService();
         val jankenDao = ServiceLocator.resolve(JankenDao.class);
 
-        val player1 = new Player(1, "Alice");
-        val player2 = new Player(2, "Bob");
-        val player1Hand = Hand.STONE;
-        val player2Hand = Hand.STONE;
+        val jankenCountBeforeTest = tm.transactional(jankenDao::count);
 
-        tm.transactional(tx -> {
+        // 実行
 
-            val jankenCountBeforeTest = jankenDao.count(tx);
+        try {
+            service.play(1L, Hand.STONE, 2L, Hand.STONE);
 
-            // 実行
+            // 例外が発生しない場合はテスト失敗
+            fail();
+        } catch (UnsupportedOperationException e) {
+            // Do nothing
+        }
 
-            try {
-                service.play(player1, player1Hand, player2, player2Hand);
+        // 検証
 
-                // 例外が発生しない場合はテスト失敗
-                fail();
-            } catch (UnsupportedOperationException e) {
-                // Do nothing
-            }
-
-            // 検証
-
-            val jankenCountAfterTest = jankenDao.count(tx);
-            assertEquals(jankenCountBeforeTest, jankenCountAfterTest, "じゃんけんの件数が増えていない");
-
-        });
+        val jankenCountAfterTest = tm.transactional(jankenDao::count);
+        assertEquals(jankenCountBeforeTest, jankenCountAfterTest, "じゃんけんの件数が増えていない");
     }
 
 }

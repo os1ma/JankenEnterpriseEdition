@@ -2,6 +2,7 @@ package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.model.Janken;
+import com.example.janken.domain.model.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
@@ -56,7 +57,7 @@ class JankenRowMapper implements RowMapper<Janken> {
         val id = rs.getLong(1);
         val playedAt = rs.getTimestamp(2).toLocalDateTime();
 
-        return new Janken(id, playedAt);
+        return new Janken(id, playedAt, null, null);
     }
 
 }
@@ -70,7 +71,27 @@ class JankenInsertMapper implements InsertMapper<Janken> {
 
     @Override
     public Janken zipWithKey(long key, Janken objectWithoutKey) {
-        return new Janken(key, objectWithoutKey.getPlayedAt());
+        val detail1 = objectWithoutKey.getDetail1();
+        val detail1WithId = new JankenDetail(
+                null,
+                key,
+                detail1.getPlayerId(),
+                detail1.getHand(),
+                detail1.getResult());
+
+        val details2 = objectWithoutKey.getDetail2();
+        val detail2WithId = new JankenDetail(
+                null,
+                key,
+                details2.getPlayerId(),
+                details2.getHand(),
+                details2.getResult());
+
+        return new Janken(
+                key,
+                objectWithoutKey.getPlayedAt(),
+                detail1WithId,
+                detail2WithId);
     }
 
 }
