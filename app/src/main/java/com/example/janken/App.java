@@ -1,7 +1,7 @@
 package com.example.janken;
 
-import com.example.janken.application.service.JankenService;
-import com.example.janken.application.service.PlayerService;
+import com.example.janken.application.service.JankenApplicationService;
+import com.example.janken.application.service.PlayerApplicationService;
 import com.example.janken.domain.dao.JankenDao;
 import com.example.janken.domain.dao.JankenDetailDao;
 import com.example.janken.domain.dao.PlayerDao;
@@ -23,8 +23,8 @@ public class App {
 
         ServiceLocator.register(JankenController.class, JankenController.class);
 
-        ServiceLocator.register(PlayerService.class, PlayerService.class);
-        ServiceLocator.register(JankenService.class, JankenService.class);
+        ServiceLocator.register(PlayerApplicationService.class, PlayerApplicationService.class);
+        ServiceLocator.register(JankenApplicationService.class, JankenApplicationService.class);
 
         ServiceLocator.register(PlayerDao.class, PlayerMySQLDao.class);
         ServiceLocator.register(JankenDao.class, JankenMySQLDao.class);

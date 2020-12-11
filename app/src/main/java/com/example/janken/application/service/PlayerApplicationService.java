@@ -5,7 +5,7 @@ import com.example.janken.domain.model.Player;
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.registry.ServiceLocator;
 
-public class PlayerService {
+public class PlayerApplicationService {
 
     private TransactionManager tm = ServiceLocator.resolve(TransactionManager.class);
 

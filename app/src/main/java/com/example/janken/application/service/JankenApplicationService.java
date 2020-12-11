@@ -12,7 +12,7 @@ import lombok.val;
 
 import java.util.Optional;
 
-public class JankenService {
+public class JankenApplicationService {
 
     private TransactionManager tm = ServiceLocator.resolve(TransactionManager.class);
 

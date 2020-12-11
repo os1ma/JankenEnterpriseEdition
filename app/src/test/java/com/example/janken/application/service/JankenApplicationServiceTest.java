@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class JankenServiceTest {
+class JankenApplicationServiceTest {
 
     @Test
     public void じゃんけん明細保存時に例外が発生した場合じゃんけんも保存されない() {
@@ -31,7 +31,7 @@ class JankenServiceTest {
         ServiceLocator.register(JankenDetailDao.class, JankenDetailErrorDao.class);
 
         val tm = ServiceLocator.resolve(TransactionManager.class);
-        val service = new JankenService();
+        val service = new JankenApplicationService();
         val jankenDao = ServiceLocator.resolve(JankenDao.class);
 
         val jankenCountBeforeTest = tm.transactional(jankenDao::count);

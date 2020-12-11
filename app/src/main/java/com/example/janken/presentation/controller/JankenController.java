@@ -1,7 +1,7 @@
 package com.example.janken.presentation.controller;
 
-import com.example.janken.application.service.JankenService;
-import com.example.janken.application.service.PlayerService;
+import com.example.janken.application.service.JankenApplicationService;
+import com.example.janken.application.service.PlayerApplicationService;
 import com.example.janken.domain.model.Hand;
 import com.example.janken.domain.model.Player;
 import com.example.janken.presentation.view.View;
@@ -20,12 +20,12 @@ public class JankenController {
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
     private static final String VIEW_RESOURCE_PREFIX = "view/";
 
-    private PlayerService playerService = ServiceLocator.resolve(PlayerService.class);
-    private JankenService jankenService = ServiceLocator.resolve(JankenService.class);
+    private PlayerApplicationService playerApplicationService = ServiceLocator.resolve(PlayerApplicationService.class);
+    private JankenApplicationService jankenApplicationService = ServiceLocator.resolve(JankenApplicationService.class);
 
     public void play() {
-        val player1 = playerService.findPlayerById(PLAYER_1_ID);
-        val player2 = playerService.findPlayerById(PLAYER_2_ID);
+        val player1 = playerApplicationService.findPlayerById(PLAYER_1_ID);
+        val player2 = playerApplicationService.findPlayerById(PLAYER_2_ID);
 
         val player1Hand = scanHand(player1);
         val player2Hand = scanHand(player2);
@@ -33,7 +33,7 @@ public class JankenController {
         showHandWithName(player1Hand, player1);
         showHandWithName(player2Hand, player2);
 
-        val maybeWinner = jankenService.play(PLAYER_1_ID, player1Hand, PLAYER_2_ID, player2Hand);
+        val maybeWinner = jankenApplicationService.play(PLAYER_1_ID, player1Hand, PLAYER_2_ID, player2Hand);
 
         new View(VIEW_RESOURCE_PREFIX + "result.vm")
                 .with("winner", maybeWinner.orElse(null))
