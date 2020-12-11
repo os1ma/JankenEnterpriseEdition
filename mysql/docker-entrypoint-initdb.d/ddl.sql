@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `janken`.`players` (
 
 CREATE TABLE IF NOT EXISTS `janken`.`jankens` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `playedAt` DATETIME NOT NULL,
+  `played_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`)
 );
 

@@ -12,16 +12,16 @@ import lombok.val;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class JankenDetailMySQLDao implements JankenDetailDao {
 
-    private static final String SELECT_FROM_CLAUSE = "SELECT id, janken_id, player_id, hand, result FROM janken_details ";
-    private static final String INSERT_COMMAND = "INSERT INTO janken_details (janken_id, player_id, hand, result) VALUES ";
-    private static final String INSERT_COMMAND_VALUE_CLAUSE = "(?, ?, ?, ?)";
+    private static final String TABLE_NAME = "janken_details";
+
+    private static final String SELECT_FROM_CLAUSE = "SELECT id, janken_id, player_id, hand, result " +
+            "FROM " + TABLE_NAME + " ";
 
     private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
     private JankenDetailRowMapper rowMapper = new JankenDetailRowMapper();
@@ -41,20 +41,12 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
 
     @Override
     public long count(Transaction tx) {
-        return simpleJDBCWrapper.count(tx, "janken_details");
+        return simpleJDBCWrapper.count(tx, TABLE_NAME);
     }
 
     @Override
     public List<JankenDetail> insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
-        if (jankenDetails.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        val sql = INSERT_COMMAND + jankenDetails.stream()
-                .map(jd -> INSERT_COMMAND_VALUE_CLAUSE)
-                .collect(Collectors.joining(", "));
-
-        return simpleJDBCWrapper.insertAndReturnWithKeys(tx, insertMapper, sql, jankenDetails);
+        return simpleJDBCWrapper.insertAndReturnObjectWithKeys(tx, insertMapper, TABLE_NAME, jankenDetails);
     }
 
 }
@@ -77,12 +69,12 @@ class JankenDetailRowMapper implements RowMapper<JankenDetail> {
 class JankenDetailInsertMapper implements InsertMapper<JankenDetail> {
 
     @Override
-    public List<Object> object2InsertParams(JankenDetail object) {
-        return List.of(
-                object.getJankenId(),
-                object.getPlayerId(),
-                object.getHand().getValue(),
-                object.getResult().getValue());
+    public Map<String, Object> object2InsertParams(JankenDetail object) {
+        return Map.of(
+                "janken_id", object.getJankenId(),
+                "player_id", object.getPlayerId(),
+                "hand", object.getHand().getValue(),
+                "result", object.getResult().getValue());
     }
 
     @Override

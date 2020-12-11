@@ -12,12 +12,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class JankenMySQLDao implements JankenDao {
 
-    private static final String SELECT_FROM_CALUSE = "SELECT id, playedAt FROM jankens ";
-    private static final String INSERT_COMMAND = "INSERT INTO jankens (playedAt) VALUES (?)";
+    private static final String TABLE_NAME = "jankens";
+
+    private static final String SELECT_FROM_CALUSE = "SELECT id, played_at FROM " + TABLE_NAME + " ";
 
     private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
     private JankenRowMapper rowMapper = new JankenRowMapper();
@@ -37,12 +39,12 @@ public class JankenMySQLDao implements JankenDao {
 
     @Override
     public long count(Transaction tx) {
-        return simpleJDBCWrapper.count(tx, "jankens");
+        return simpleJDBCWrapper.count(tx, TABLE_NAME);
     }
 
     @Override
     public Janken insert(Transaction tx, Janken janken) {
-        return simpleJDBCWrapper.insertOneAndReturnWithKey(tx, insertMapper, INSERT_COMMAND, janken);
+        return simpleJDBCWrapper.insertOneAndReturnObjectWithKey(tx, insertMapper, TABLE_NAME, janken);
     }
 
 }
@@ -62,8 +64,8 @@ class JankenRowMapper implements RowMapper<Janken> {
 class JankenInsertMapper implements InsertMapper<Janken> {
 
     @Override
-    public List<Object> object2InsertParams(Janken object) {
-        return List.of(Timestamp.valueOf(object.getPlayedAt()));
+    public Map<String, Object> object2InsertParams(Janken object) {
+        return Map.of("played_at", Timestamp.valueOf(object.getPlayedAt()));
     }
 
     @Override
