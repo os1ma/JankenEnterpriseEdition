@@ -30,47 +30,18 @@ public class JankenService {
 
             Result player1Result;
             Result player2Result;
-            if (player1Hand.equals(Hand.STONE)) {
-                // プレイヤーがグーの場合
 
-                if (player2Hand.equals(Hand.STONE)) {
-                    player1Result = Result.DRAW;
-                    player2Result = Result.DRAW;
-                } else if (player2Hand.equals(Hand.PAPER)) {
-                    player1Result = Result.LOSE;
-                    player2Result = Result.WIN;
-                } else {
-                    player1Result = Result.WIN;
-                    player2Result = Result.LOSE;
-                }
+            if (player1Hand.wins(player2Hand)) {
+                player1Result = Result.WIN;
+                player2Result = Result.LOSE;
 
-            } else if (player1Hand.equals(Hand.PAPER)) {
-                // プレイヤーがパーの場合
-
-                if (player2Hand.equals(Hand.STONE)) {
-                    player1Result = Result.WIN;
-                    player2Result = Result.LOSE;
-                } else if (player2Hand.equals(Hand.PAPER)) {
-                    player1Result = Result.DRAW;
-                    player2Result = Result.DRAW;
-                } else {
-                    player1Result = Result.LOSE;
-                    player2Result = Result.WIN;
-                }
+            } else if (player2Hand.wins(player1Hand)) {
+                player1Result = Result.LOSE;
+                player2Result = Result.WIN;
 
             } else {
-                // プレイヤーがチョキの場合
-
-                if (player2Hand.equals(Hand.STONE)) {
-                    player1Result = Result.LOSE;
-                    player2Result = Result.WIN;
-                } else if (player2Hand.equals(Hand.PAPER)) {
-                    player1Result = Result.WIN;
-                    player2Result = Result.LOSE;
-                } else {
-                    player1Result = Result.DRAW;
-                    player2Result = Result.DRAW;
-                }
+                player1Result = Result.DRAW;
+                player2Result = Result.DRAW;
             }
 
             // じゃんけんを生成

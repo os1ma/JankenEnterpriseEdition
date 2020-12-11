@@ -21,4 +21,18 @@ public enum Hand {
 
     private int value;
     private String name;
+
+    public boolean wins(Hand other) {
+        switch (this) {
+            case STONE:
+                return other.equals(SCISSORS);
+            case PAPER:
+                return other.equals(STONE);
+            case SCISSORS:
+                return other.equals(PAPER);
+            default:
+                throw new IllegalStateException("Invalid hand. this = " + this);
+        }
+    }
+
 }
