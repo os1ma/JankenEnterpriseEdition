@@ -16,7 +16,7 @@ public class JankenDetail {
     private Hand hand;
     private Result result;
 
-    public boolean resultIsWin() {
+    public boolean isResultWin() {
         return result.equals(Result.WIN);
     }
 
