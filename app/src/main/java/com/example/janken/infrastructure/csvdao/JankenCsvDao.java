@@ -1,9 +1,9 @@
 package com.example.janken.infrastructure.csvdao;
 
-import com.example.janken.domain.dao.JankenDao;
-import com.example.janken.domain.model.Janken;
-import com.example.janken.domain.model.JankenDetail;
+import com.example.janken.domain.model.janken.Janken;
+import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.JankenDao;
 import lombok.val;
 
 import java.io.*;

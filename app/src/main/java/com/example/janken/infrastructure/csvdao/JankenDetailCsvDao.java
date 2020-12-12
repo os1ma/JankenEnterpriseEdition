@@ -1,10 +1,10 @@
 package com.example.janken.infrastructure.csvdao;
 
-import com.example.janken.domain.dao.JankenDetailDao;
-import com.example.janken.domain.model.Hand;
-import com.example.janken.domain.model.JankenDetail;
-import com.example.janken.domain.model.Result;
+import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.JankenDetail;
+import com.example.janken.domain.model.janken.Result;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.JankenDetailDao;
 import lombok.val;
 
 import java.io.*;
@@ -28,6 +28,11 @@ public class JankenDetailCsvDao implements JankenDetailDao {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, long jankenId) {
+        throw new UnsupportedOperationException();
     }
 
     public Optional<JankenDetail> findById(Transaction tx, long id) {

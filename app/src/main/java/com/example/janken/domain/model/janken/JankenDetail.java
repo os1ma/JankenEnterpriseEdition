@@ -1,4 +1,4 @@
-package com.example.janken.domain.model;
+package com.example.janken.domain.model.janken;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

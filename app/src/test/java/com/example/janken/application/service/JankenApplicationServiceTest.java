@@ -1,13 +1,19 @@
 package com.example.janken.application.service;
 
-import com.example.janken.domain.dao.JankenDao;
-import com.example.janken.domain.dao.JankenDetailDao;
-import com.example.janken.domain.model.Hand;
-import com.example.janken.domain.model.JankenDetail;
+import com.example.janken.infrastructure.dao.JankenDao;
+import com.example.janken.infrastructure.dao.JankenDetailDao;
+import com.example.janken.infrastructure.dao.PlayerDao;
+import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.JankenDetail;
+import com.example.janken.domain.model.janken.JankenRepository;
+import com.example.janken.domain.model.player.PlayerRepository;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
+import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
+import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
+import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
 import com.example.janken.registry.ServiceLocator;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -27,6 +33,11 @@ class JankenApplicationServiceTest {
         // 準備
 
         ServiceLocator.register(TransactionManager.class, JDBCTransactionManager.class);
+
+        ServiceLocator.register(PlayerRepository.class, PlayerMySQLRepository.class);
+        ServiceLocator.register(JankenRepository.class, JankenMySQLRepository.class);
+
+        ServiceLocator.register(PlayerDao.class, PlayerMySQLDao.class);
         ServiceLocator.register(JankenDao.class, JankenMySQLDao.class);
         ServiceLocator.register(JankenDetailDao.class, JankenDetailErrorDao.class);
 
@@ -60,6 +71,11 @@ class JankenDetailErrorDao implements JankenDetailDao {
 
     @Override
     public List<JankenDetail> findAllOrderById(Transaction tx) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, long jankenId) {
         throw new UnsupportedOperationException();
     }
 

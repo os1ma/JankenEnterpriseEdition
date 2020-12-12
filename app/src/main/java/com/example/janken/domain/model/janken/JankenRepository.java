@@ -1,12 +1,11 @@
-package com.example.janken.domain.dao;
+package com.example.janken.domain.model.janken;
 
-import com.example.janken.domain.model.Janken;
 import com.example.janken.domain.transaction.Transaction;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface JankenDao {
+public interface JankenRepository {
 
     List<Janken> findAllOrderById(Transaction tx);
 
@@ -14,6 +13,6 @@ public interface JankenDao {
 
     long count(Transaction tx);
 
-    Janken insert(Transaction tx, Janken janken);
+    Janken save(Transaction tx, Janken janken);
 
 }
