@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public interface JankenRepository {
 
-    List<Janken> findAllOrderById(Transaction tx);
+    List<Janken> findAllOrderByPlayedAt(Transaction tx);
 
-    Optional<Janken> findById(Transaction tx, long id);
+    Optional<Janken> findById(Transaction tx, String id);
 
     long count(Transaction tx);
 
-    Janken save(Transaction tx, Janken janken);
+    void save(Transaction tx, Janken janken);
 
 }

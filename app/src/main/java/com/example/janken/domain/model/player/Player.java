@@ -10,6 +10,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Player {
-    private long id;
+    private String id;
     private String name;
 }

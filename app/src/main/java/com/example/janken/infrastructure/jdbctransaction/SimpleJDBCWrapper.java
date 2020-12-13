@@ -3,7 +3,6 @@ package com.example.janken.infrastructure.jdbctransaction;
 import com.example.janken.domain.transaction.Transaction;
 import lombok.val;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,59 +52,13 @@ public class SimpleJDBCWrapper {
         return findList(tx, mapper, sql).get(0);
     }
 
-    public <T> List<T> insertAndReturnObjectWithKeys(Transaction tx,
-                                                     InsertMapper<T> mapper,
-                                                     String tableName,
-                                                     List<T> objects) {
-
-        val keys = insertAndReturnKeys(tx, mapper, tableName, objects);
-
-        // 自動採番されたキーとオブジェクトを紐付けた新たなオブジェクトを作成して返す
-        val objectsWithKeys = new ArrayList<T>();
-        for (int i = 0; i < objects.size(); i++) {
-            val obj = objects.get(i);
-            val key = keys.get(i);
-
-            val objectsWithKey = mapper.zipWithKey(key, obj);
-            objectsWithKeys.add(objectsWithKey);
-        }
-        return objectsWithKeys;
-    }
-
-    public <T> T insertOneAndReturnObjectWithKey(Transaction tx,
-                                                 InsertMapper<T> mapper,
-                                                 String tableName,
-                                                 T object) {
-
-        return insertAndReturnObjectWithKeys(tx, mapper, tableName, List.of(object)).get(0);
-    }
-
-    // find 関係の private method
-
-    private void setParams(PreparedStatement stmt, Object... params) throws SQLException {
-        for (int i = 0; i < params.length; i++) {
-            stmt.setObject(i + 1, params[i]);
-        }
-    }
-
-    private <T> List<T> resultSet2Objects(ResultSet rs, RowMapper<T> mapper) throws SQLException {
-        val list = new ArrayList<T>();
-        while (rs.next()) {
-            val obj = mapper.map(rs);
-            list.add(obj);
-        }
-        return list;
-    }
-
-    // insert 関係の private method
-
-    private <T> List<Long> insertAndReturnKeys(Transaction tx,
-                                               InsertMapper<T> mapper,
-                                               String tableName,
-                                               List<T> objects) {
+    public <T> void insertAll(Transaction tx,
+                              InsertMapper<T> mapper,
+                              String tableName,
+                              List<T> objects) {
 
         if (objects.isEmpty()) {
-            return new ArrayList<>();
+            return;
         }
 
         val columnNames = getSortedColumnNames(mapper, objects);
@@ -129,17 +82,37 @@ public class SimpleJDBCWrapper {
 
             stmt.executeUpdate();
 
-            try (val rs = stmt.getGeneratedKeys()) {
-                val idMapper = new SingleRowMapper<BigInteger>();
-                return resultSet2Objects(rs, idMapper).stream()
-                        .map(BigInteger::longValue)
-                        .collect(Collectors.toList());
-            }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public <T> void insertOne(Transaction tx,
+                              InsertMapper<T> mapper,
+                              String tableName,
+                              T object) {
+
+        insertAll(tx, mapper, tableName, List.of(object));
+    }
+
+    // find 関係の private method
+
+    private void setParams(PreparedStatement stmt, Object... params) throws SQLException {
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
+    }
+
+    private <T> List<T> resultSet2Objects(ResultSet rs, RowMapper<T> mapper) throws SQLException {
+        val list = new ArrayList<T>();
+        while (rs.next()) {
+            val obj = mapper.map(rs);
+            list.add(obj);
+        }
+        return list;
+    }
+
+    // insert 関係の private method
 
     private String buildInsertSql(String tableName,
                                   List<String> columnNames,

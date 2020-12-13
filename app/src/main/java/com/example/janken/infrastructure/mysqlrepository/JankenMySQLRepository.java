@@ -1,10 +1,10 @@
 package com.example.janken.infrastructure.mysqlrepository;
 
-import com.example.janken.infrastructure.dao.JankenDao;
-import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.domain.model.janken.Janken;
 import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.JankenDao;
+import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.registry.ServiceLocator;
 import lombok.val;
 
@@ -18,8 +18,8 @@ public class JankenMySQLRepository implements JankenRepository {
     private JankenDetailDao jankenDetailDao = ServiceLocator.resolve(JankenDetailDao.class);
 
     @Override
-    public List<Janken> findAllOrderById(Transaction tx) {
-        val jankenWithoutDetails = jankenDao.findAllOrderById(tx);
+    public List<Janken> findAllOrderByPlayedAt(Transaction tx) {
+        val jankenWithoutDetails = jankenDao.findAllOrderByPlayedAt(tx);
         val jankenDetails = jankenDetailDao.findAllOrderById(tx);
 
         return jankenWithoutDetails.stream()
@@ -38,7 +38,7 @@ public class JankenMySQLRepository implements JankenRepository {
     }
 
     @Override
-    public Optional<Janken> findById(Transaction tx, long id) {
+    public Optional<Janken> findById(Transaction tx, String id) {
         return jankenDao.findById(tx, id)
                 .map(j -> {
                     val jankenDetails = jankenDetailDao.findByJankenIdOrderById(tx, id);
@@ -57,15 +57,9 @@ public class JankenMySQLRepository implements JankenRepository {
     }
 
     @Override
-    public Janken save(Transaction tx, Janken janken) {
-        val jankenWithId = jankenDao.insert(tx, janken);
-        val jankenDetailsWithId = jankenDetailDao.insertAll(tx, jankenWithId.details());
-
-        return new Janken(
-                jankenWithId.getId(),
-                janken.getPlayedAt(),
-                jankenDetailsWithId.get(0),
-                jankenDetailsWithId.get(1));
+    public void save(Transaction tx, Janken janken) {
+        jankenDao.insert(tx, janken);
+        jankenDetailDao.insertAll(tx, janken.details());
     }
 
 }

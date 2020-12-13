@@ -1,20 +1,21 @@
 CREATE TABLE IF NOT EXISTS `janken`.`players` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` CHAR(36) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
 
 CREATE TABLE IF NOT EXISTS `janken`.`jankens` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `played_at` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
+  `id` CHAR(36) NOT NULL,
+  `played_at` DATETIME(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `played_at` (`played_at` ASC)
 );
 
 CREATE TABLE IF NOT EXISTS `janken`.`janken_details` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `janken_id` INT UNSIGNED NOT NULL,
-  `player_id` INT UNSIGNED NOT NULL,
+  `id` CHAR(36) NOT NULL,
+  `janken_id` CHAR(36) NOT NULL,
+  `player_id` CHAR(36) NOT NULL,
   `hand` INT UNSIGNED NOT NULL,
   `result` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),

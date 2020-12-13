@@ -1,9 +1,8 @@
 package com.example.janken.infrastructure.mysqldao;
 
-import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.domain.model.janken.Janken;
-import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
@@ -27,13 +26,13 @@ public class JankenMySQLDao implements JankenDao {
     private JankenInsertMapper insertMapper = new JankenInsertMapper();
 
     @Override
-    public List<Janken> findAllOrderById(Transaction tx) {
-        val sql = SELECT_FROM_CALUSE + "ORDER BY id";
+    public List<Janken> findAllOrderByPlayedAt(Transaction tx) {
+        val sql = SELECT_FROM_CALUSE + "ORDER BY played_at";
         return simpleJDBCWrapper.findList(tx, rowMapper, sql);
     }
 
     @Override
-    public Optional<Janken> findById(Transaction tx, long id) {
+    public Optional<Janken> findById(Transaction tx, String id) {
         val sql = SELECT_FROM_CALUSE + "WHERE id = ?";
         return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, id);
     }
@@ -44,8 +43,8 @@ public class JankenMySQLDao implements JankenDao {
     }
 
     @Override
-    public Janken insert(Transaction tx, Janken janken) {
-        return simpleJDBCWrapper.insertOneAndReturnObjectWithKey(tx, insertMapper, TABLE_NAME, janken);
+    public void insert(Transaction tx, Janken janken) {
+        simpleJDBCWrapper.insertOne(tx, insertMapper, TABLE_NAME, janken);
     }
 
 }
@@ -54,7 +53,7 @@ class JankenRowMapper implements RowMapper<Janken> {
 
     @Override
     public Janken map(ResultSet rs) throws SQLException {
-        val id = rs.getLong(1);
+        val id = rs.getString(1);
         val playedAt = rs.getTimestamp(2).toLocalDateTime();
 
         return new Janken(id, playedAt, null, null);
@@ -66,32 +65,9 @@ class JankenInsertMapper implements InsertMapper<Janken> {
 
     @Override
     public Map<String, Object> object2InsertParams(Janken object) {
-        return Map.of("played_at", Timestamp.valueOf(object.getPlayedAt()));
-    }
-
-    @Override
-    public Janken zipWithKey(long key, Janken objectWithoutKey) {
-        val detail1 = objectWithoutKey.getDetail1();
-        val detail1WithId = new JankenDetail(
-                null,
-                key,
-                detail1.getPlayerId(),
-                detail1.getHand(),
-                detail1.getResult());
-
-        val details2 = objectWithoutKey.getDetail2();
-        val detail2WithId = new JankenDetail(
-                null,
-                key,
-                details2.getPlayerId(),
-                details2.getHand(),
-                details2.getResult());
-
-        return new Janken(
-                key,
-                objectWithoutKey.getPlayedAt(),
-                detail1WithId,
-                detail2WithId);
+        return Map.of(
+                "id", object.getId(),
+                "played_at", Timestamp.valueOf(object.getPlayedAt()));
     }
 
 }

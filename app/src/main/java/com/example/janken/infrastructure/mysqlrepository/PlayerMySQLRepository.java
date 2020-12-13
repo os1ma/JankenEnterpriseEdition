@@ -11,7 +11,7 @@ public class PlayerMySQLRepository implements PlayerRepository {
     private PlayerDao playerDao = ServiceLocator.resolve(PlayerDao.class);
 
     @Override
-    public Player findPlayerById(Transaction tx, long playerId) {
+    public Player findPlayerById(Transaction tx, String playerId) {
         return playerDao.findPlayerById(tx, playerId);
     }
 

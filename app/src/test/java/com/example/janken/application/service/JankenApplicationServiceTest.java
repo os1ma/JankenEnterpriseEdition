@@ -1,14 +1,14 @@
 package com.example.janken.application.service;
 
-import com.example.janken.infrastructure.dao.JankenDao;
-import com.example.janken.infrastructure.dao.JankenDetailDao;
-import com.example.janken.infrastructure.dao.PlayerDao;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.model.player.PlayerRepository;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.domain.transaction.TransactionManager;
+import com.example.janken.infrastructure.dao.JankenDao;
+import com.example.janken.infrastructure.dao.JankenDetailDao;
+import com.example.janken.infrastructure.dao.PlayerDao;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
@@ -50,7 +50,7 @@ class JankenApplicationServiceTest {
         // 実行
 
         try {
-            service.play(1L, Hand.STONE, 2L, Hand.STONE);
+            service.play("1", Hand.STONE, "2", Hand.STONE);
 
             // 例外が発生しない場合はテスト失敗
             fail();
@@ -75,12 +75,12 @@ class JankenDetailErrorDao implements JankenDetailDao {
     }
 
     @Override
-    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, long jankenId) {
+    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, String jankenId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Optional<JankenDetail> findById(Transaction tx, long id) {
+    public Optional<JankenDetail> findById(Transaction tx, String id) {
         throw new UnsupportedOperationException();
     }
 
@@ -90,7 +90,7 @@ class JankenDetailErrorDao implements JankenDetailDao {
     }
 
     @Override
-    public List<JankenDetail> insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
+    public void insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
         throw new UnsupportedOperationException();
     }
 

@@ -21,8 +21,8 @@ public class JankenApplicationService {
     /**
      * じゃんけんを実行し、結果を保存して、勝者を返します。
      */
-    public Optional<Player> play(long player1Id, Hand player1Hand,
-                                 long player2Id, Hand player2Hand) {
+    public Optional<Player> play(String player1Id, Hand player1Hand,
+                                 String player2Id, Hand player2Hand) {
 
         return tm.transactional(tx -> {
 

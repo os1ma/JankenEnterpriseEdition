@@ -1,10 +1,10 @@
 package com.example.janken.infrastructure.mysqldao;
 
-import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.Result;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
@@ -34,13 +34,13 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
     }
 
     @Override
-    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, long jankenId) {
+    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, String jankenId) {
         val sql = SELECT_FROM_CLAUSE + "WHERE janken_id = ? ORDER BY ID";
         return simpleJDBCWrapper.findList(tx, rowMapper, sql, jankenId);
     }
 
     @Override
-    public Optional<JankenDetail> findById(Transaction tx, long id) {
+    public Optional<JankenDetail> findById(Transaction tx, String id) {
         val sql = SELECT_FROM_CLAUSE + "WHERE id = ?";
         return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, id);
     }
@@ -51,8 +51,8 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
     }
 
     @Override
-    public List<JankenDetail> insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
-        return simpleJDBCWrapper.insertAndReturnObjectWithKeys(tx, insertMapper, TABLE_NAME, jankenDetails);
+    public void insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
+        simpleJDBCWrapper.insertAll(tx, insertMapper, TABLE_NAME, jankenDetails);
     }
 
 }
@@ -61,9 +61,9 @@ class JankenDetailRowMapper implements RowMapper<JankenDetail> {
 
     @Override
     public JankenDetail map(ResultSet rs) throws SQLException {
-        val id = rs.getLong(1);
-        val jankenId = rs.getLong(2);
-        val playerId = rs.getLong(3);
+        val id = rs.getString(1);
+        val jankenId = rs.getString(2);
+        val playerId = rs.getString(3);
         val hand = Hand.of(rs.getInt(4));
         val result = Result.of(rs.getInt(5));
 
@@ -77,20 +77,11 @@ class JankenDetailInsertMapper implements InsertMapper<JankenDetail> {
     @Override
     public Map<String, Object> object2InsertParams(JankenDetail object) {
         return Map.of(
+                "id", object.getId(),
                 "janken_id", object.getJankenId(),
                 "player_id", object.getPlayerId(),
                 "hand", object.getHand().getValue(),
                 "result", object.getResult().getValue());
-    }
-
-    @Override
-    public JankenDetail zipWithKey(long key, JankenDetail objectWithoutKey) {
-        return new JankenDetail(
-                key,
-                objectWithoutKey.getJankenId(),
-                objectWithoutKey.getPlayerId(),
-                objectWithoutKey.getHand(),
-                objectWithoutKey.getResult());
     }
 
 }

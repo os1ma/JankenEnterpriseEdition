@@ -14,8 +14,8 @@ import java.util.Scanner;
 public class JankenController {
 
     // ID は実際のアプリケーションでは認証情報から取得することが想定される
-    private static final long PLAYER_1_ID = 1;
-    private static final long PLAYER_2_ID = 2;
+    private static final String PLAYER_1_ID = "1";
+    private static final String PLAYER_2_ID = "2";
 
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
     private static final String VIEW_RESOURCE_PREFIX = "view/";

@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
@@ -12,8 +13,8 @@ import java.util.Optional;
 @ToString
 public class Janken {
 
-    public static Janken play(Long player1Id, Hand player1Hand,
-                              Long player2Id, Hand player2Hand) {
+    public static Janken play(String player1Id, Hand player1Hand,
+                              String player2Id, Hand player2Hand) {
         // 勝敗判定
 
         Result player1Result;
@@ -32,18 +33,28 @@ public class Janken {
             player2Result = Result.DRAW;
         }
 
+        // ID を生成
+
+        val jankenId = generateId();
+        val jankenDetail1Id = generateId();
+        val jankenDetail2Id = generateId();
+
         // じゃんけん明細を生成
 
-        val detail1 = new JankenDetail(null, null, player1Id, player1Hand, player1Result);
-        val detail2 = new JankenDetail(null, null, player2Id, player2Hand, player2Result);
+        val detail1 = new JankenDetail(jankenDetail1Id, jankenId, player1Id, player1Hand, player1Result);
+        val detail2 = new JankenDetail(jankenDetail2Id, jankenId, player2Id, player2Hand, player2Result);
 
         // じゃんけんを生成
 
         val playedAt = LocalDateTime.now();
-        return new Janken(null, playedAt, detail1, detail2);
+        return new Janken(jankenId, playedAt, detail1, detail2);
     }
 
-    private Long id;
+    private static String generateId() {
+        return UUID.randomUUID().toString();
+    }
+
+    private String id;
     private LocalDateTime playedAt;
     private JankenDetail detail1;
     private JankenDetail detail2;
@@ -52,7 +63,7 @@ public class Janken {
         return List.of(detail1, detail2);
     }
 
-    public Optional<Long> winnerPlayerId() {
+    public Optional<String> winnerPlayerId() {
         if (detail1.isResultWin()) {
             return Optional.of(detail1.getPlayerId());
 

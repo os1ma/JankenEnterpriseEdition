@@ -11,7 +11,7 @@ public class PlayerApplicationService {
 
     private PlayerRepository playerRepository = ServiceLocator.resolve(PlayerRepository.class);
 
-    public Player findPlayerById(long playerId) {
+    public Player findPlayerById(String playerId) {
         return tm.transactional(tx -> {
             return playerRepository.findPlayerById(tx, playerId);
         });

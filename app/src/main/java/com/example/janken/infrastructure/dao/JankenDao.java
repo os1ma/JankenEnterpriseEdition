@@ -8,12 +8,12 @@ import java.util.Optional;
 
 public interface JankenDao {
 
-    List<Janken> findAllOrderById(Transaction tx);
+    List<Janken> findAllOrderByPlayedAt(Transaction tx);
 
-    Optional<Janken> findById(Transaction tx, long id);
+    Optional<Janken> findById(Transaction tx, String id);
 
     long count(Transaction tx);
 
-    Janken insert(Transaction tx, Janken janken);
+    void insert(Transaction tx, Janken janken);
 
 }

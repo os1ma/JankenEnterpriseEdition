@@ -1,7 +1,6 @@
 package com.example.janken.infrastructure.csvdao;
 
 import com.example.janken.domain.model.janken.Janken;
-import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDao;
 import lombok.val;
@@ -22,7 +21,7 @@ public class JankenCsvDao implements JankenDao {
     private static final String JANKENS_CSV = CsvDaoUtils.DATA_DIR + "jankens.csv";
 
     @Override
-    public List<Janken> findAllOrderById(Transaction tx) {
+    public List<Janken> findAllOrderByPlayedAt(Transaction tx) {
         try (val stream = Files.lines(Paths.get(JANKENS_CSV), StandardCharsets.UTF_8)) {
             return stream.map(this::line2Janken)
                     .collect(Collectors.toList());
@@ -31,10 +30,10 @@ public class JankenCsvDao implements JankenDao {
         }
     }
 
-    public Optional<Janken> findById(Transaction tx, long id) {
+    public Optional<Janken> findById(Transaction tx, String id) {
         try (val stream = Files.lines(Paths.get(JANKENS_CSV), StandardCharsets.UTF_8)) {
             return stream.map(this::line2Janken)
-                    .filter(j -> j.getId() == id)
+                    .filter(j -> j.getId().equals(id))
                     .findFirst();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -46,7 +45,7 @@ public class JankenCsvDao implements JankenDao {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public Janken insert(Transaction tx, Janken janken) {
+    public void insert(Transaction tx, Janken janken) {
         val jankensCsv = new File(JANKENS_CSV);
 
         try (val fw = new FileWriter(jankensCsv, true);
@@ -56,18 +55,9 @@ public class JankenCsvDao implements JankenDao {
             // ファイルが存在しない場合に備えて作成
             jankensCsv.createNewFile();
 
-            val jankenId = CsvDaoUtils.countFileLines(JANKENS_CSV) + 1;
-
-            val detail1 = janken.getDetail1();
-            val detail1WithId = new JankenDetail(null, jankenId, detail1.getPlayerId(), detail1.getHand(), detail1.getResult());
-            val detail2 = janken.getDetail2();
-            val detail2WithId = new JankenDetail(null, jankenId, detail2.getPlayerId(), detail2.getHand(), detail2.getResult());
-            val jankenWithId = new Janken(jankenId, janken.getPlayedAt(), detail1WithId, detail2WithId);
-
-            val line = janken2Line(jankenWithId);
+            val line = janken2Line(janken);
             pw.println(line);
 
-            return jankenWithId;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -75,7 +65,8 @@ public class JankenCsvDao implements JankenDao {
 
     private Janken line2Janken(String line) {
         val values = line.split(CsvDaoUtils.CSV_DELIMITER);
-        val jankenId = Long.valueOf(values[0]);
+
+        val jankenId = values[0];
         val playedAt = LocalDateTime.parse(values[1], DATE_TIME_FORMATTER);
 
         return new Janken(jankenId, playedAt, null, null);

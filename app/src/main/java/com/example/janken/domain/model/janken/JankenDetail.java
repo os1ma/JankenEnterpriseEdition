@@ -10,9 +10,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class JankenDetail {
-    private Long id;
-    private Long jankenId;
-    private Long playerId;
+    private String id;
+    private String jankenId;
+    private String playerId;
     private Hand hand;
     private Result result;
 
