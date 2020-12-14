@@ -65,7 +65,8 @@ dependencyCheck {
 }
 
 // 以下、Heroku の設定
-// 参考: https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+// 参考: https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku#using-webapp-runner-to-deploy-war-files
+
 task stage() {
     dependsOn clean, war
 }
