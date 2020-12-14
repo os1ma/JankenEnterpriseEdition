@@ -17,7 +17,20 @@ chmod +x .git/hooks/pre-commit
 
 ## 実行手順
 
+### CLI アプリケーション
+
 ```shell
-./gradlew build
+./gradlew clean jar
 DATA_DIR="$(pwd)/data" java -jar app/build/libs/app.jar
 ```
+
+### Web アプリケーション
+
+```shell
+./gradlew clean war
+docker-compose -f docker-compose.yaml -f docker-compose-tomcat.yaml up -d
+```
+
+その後、以下の URL などにアクセス
+
+- http://localhost:8080/api/health

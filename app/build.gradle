@@ -79,4 +79,4 @@ task copyToLib(type: Copy) {
     }
 }
 
-stage.dependsOn(copyToLib)
+war.dependsOn(copyToLib)
