@@ -33,9 +33,9 @@ jobs:
       with:
         name: reports
         path: ./app/build/reports/**
-    - name: Archive JAR
+    - name: Archive libs
       uses: actions/upload-artifact@v2
       with:
-        name: jar
-        path: ./app/build/libs/app.jar
+        name: libs
+        path: ./app/build/libs/**
         if-no-files-found: error

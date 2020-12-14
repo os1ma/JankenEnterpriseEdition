@@ -34,6 +34,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.14.1'
+
+    // Heroku
+    compile 'com.github.jsimone:webapp-runner:9.0.27.1'
 }
 
 application {
@@ -60,3 +63,19 @@ jar {
 dependencyCheck {
     failBuildOnCVSS = 7.0F
 }
+
+// 以下、Heroku の設定
+// 参考: https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+task stage() {
+    dependsOn clean, war
+}
+war.mustRunAfter clean
+
+task copyToLib(type: Copy) {
+    into "$buildDir/server"
+    from(configurations.compile) {
+        include "webapp-runner*"
+    }
+}
+
+stage.dependsOn(copyToLib)
