@@ -1,9 +1,9 @@
 name: workflow
 
 on:
-  pull_request:
+  push:
     branches:
-    - main
+    - develop
   schedule:
     # 日本時間で毎晩 21 時
     - cron: '0 12 * * *'
