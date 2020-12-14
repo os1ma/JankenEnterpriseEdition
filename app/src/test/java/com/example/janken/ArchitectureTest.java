@@ -29,6 +29,6 @@ public class ArchitectureTest {
             .layer(ROOT_PACKAGE).definedBy(ROOT_PACKAGE)
             .whereLayer(PRESENTATION_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE)
             .whereLayer(APPLICATION_LAYER).mayOnlyBeAccessedByLayers(PRESENTATION_LAYER)
-            .whereLayer(INFRASTRUCTURE_LAYER).mayNotBeAccessedByAnyLayer();
+            .whereLayer(INFRASTRUCTURE_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE);
 
 }

@@ -6,8 +6,8 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: janken
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-      MYSQL_DATABASE: janken
     volumes:
       - ${PWD}/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

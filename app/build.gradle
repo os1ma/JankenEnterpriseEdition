@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'war'
     id 'org.owasp.dependencycheck' version '6.0.3'
 }
 
@@ -12,6 +13,10 @@ dependencies {
     implementation 'org.apache.velocity:velocity:1.7'
     // Velocity が依存する commons-collections:3.2.1 から明示的にバージョンアップ (CVE-2015-6420, CVE-2017-15708 の対応)
     implementation 'commons-collections:commons-collections:3.2.2'
+
+    // Web
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Database
     implementation 'mysql:mysql-connector-java:8.0.22'
