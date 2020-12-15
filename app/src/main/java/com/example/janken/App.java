@@ -14,7 +14,7 @@ import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
 import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
-import com.example.janken.presentation.controller.JankenController;
+import com.example.janken.presentation.cli.controller.JankenController;
 import com.example.janken.registry.ServiceLocator;
 
 public class App {

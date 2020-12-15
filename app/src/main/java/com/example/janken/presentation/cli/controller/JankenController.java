@@ -1,10 +1,10 @@
-package com.example.janken.presentation.controller;
+package com.example.janken.presentation.cli.controller;
 
 import com.example.janken.application.service.JankenApplicationService;
 import com.example.janken.application.service.PlayerApplicationService;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.player.Player;
-import com.example.janken.presentation.view.View;
+import com.example.janken.presentation.cli.view.View;
 import com.example.janken.registry.ServiceLocator;
 import lombok.val;
 
@@ -18,7 +18,7 @@ public class JankenController {
     private static final String PLAYER_2_ID = "2";
 
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
-    private static final String VIEW_RESOURCE_PREFIX = "view/";
+    private static final String VIEW_RESOURCE_PREFIX = "cli/view/";
 
     private PlayerApplicationService playerApplicationService = ServiceLocator.resolve(PlayerApplicationService.class);
     private JankenApplicationService jankenApplicationService = ServiceLocator.resolve(JankenApplicationService.class);

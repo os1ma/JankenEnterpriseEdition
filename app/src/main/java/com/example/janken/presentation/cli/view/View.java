@@ -1,4 +1,4 @@
-package com.example.janken.presentation.view;
+package com.example.janken.presentation.cli.view;
 
 import lombok.val;
 import org.apache.velocity.VelocityContext;
