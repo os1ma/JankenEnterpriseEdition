@@ -14,7 +14,7 @@ import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
 import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
-import com.example.janken.presentation.cli.controller.JankenController;
+import com.example.janken.presentation.cli.controller.JankenCLIController;
 import com.example.janken.registry.ServiceLocator;
 
 public class JankenCLIApplication {
@@ -25,7 +25,7 @@ public class JankenCLIApplication {
 
         ServiceLocator.register(TransactionManager.class, JDBCTransactionManager.class);
 
-        ServiceLocator.register(JankenController.class, JankenController.class);
+        ServiceLocator.register(JankenCLIController.class, JankenCLIController.class);
 
         ServiceLocator.register(PlayerApplicationService.class, PlayerApplicationService.class);
         ServiceLocator.register(JankenApplicationService.class, JankenApplicationService.class);
@@ -39,7 +39,7 @@ public class JankenCLIApplication {
 
         // 実行
 
-        ServiceLocator.resolve(JankenController.class).play();
+        ServiceLocator.resolve(JankenCLIController.class).play();
 
     }
 

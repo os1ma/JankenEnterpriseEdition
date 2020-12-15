@@ -4,14 +4,14 @@ import com.example.janken.application.service.JankenApplicationService;
 import com.example.janken.application.service.PlayerApplicationService;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.player.Player;
-import com.example.janken.presentation.cli.view.View;
+import com.example.janken.presentation.cli.view.StandardOutputView;
 import com.example.janken.registry.ServiceLocator;
 import lombok.val;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class JankenController {
+public class JankenCLIController {
 
     // ID は実際のアプリケーションでは認証情報から取得することが想定される
     private static final String PLAYER_1_ID = "1";
@@ -35,14 +35,14 @@ public class JankenController {
 
         val maybeWinner = jankenApplicationService.play(PLAYER_1_ID, player1Hand, PLAYER_2_ID, player2Hand);
 
-        new View(VIEW_RESOURCE_PREFIX + "result.vm")
+        new StandardOutputView(VIEW_RESOURCE_PREFIX + "result.vm")
                 .with("winner", maybeWinner.orElse(null))
                 .show();
     }
 
     private static Hand scanHand(Player player) {
         while (true) {
-            new View(VIEW_RESOURCE_PREFIX + "scan-prompt.vm")
+            new StandardOutputView(VIEW_RESOURCE_PREFIX + "scan-prompt.vm")
                     .with("player", player)
                     .with("hands", Hand.values())
                     .show();
@@ -59,7 +59,7 @@ public class JankenController {
             if (maybeHand.isPresent()) {
                 return maybeHand.get();
             } else {
-                new View(VIEW_RESOURCE_PREFIX + "invalid-input.vm")
+                new StandardOutputView(VIEW_RESOURCE_PREFIX + "invalid-input.vm")
                         .with("input", inputStr)
                         .show();
             }
@@ -67,7 +67,7 @@ public class JankenController {
     }
 
     private static void showHandWithName(Hand hand, Player player) {
-        new View(VIEW_RESOURCE_PREFIX + "show-hand.vm")
+        new StandardOutputView(VIEW_RESOURCE_PREFIX + "show-hand.vm")
                 .with("player", player)
                 .with("hand", hand)
                 .show();
