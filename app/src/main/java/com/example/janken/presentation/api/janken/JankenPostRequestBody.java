@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class JankenPostRequestBody {
+class JankenPostRequestBody {
     private String player1Id;
     private Integer player1Hand;
     private String player2Id;

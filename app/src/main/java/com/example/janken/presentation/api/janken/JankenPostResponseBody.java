@@ -9,7 +9,7 @@ import java.util.Optional;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class JankenPostResponseBody {
+class JankenPostResponseBody {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     static JankenPostResponseBody of(Optional<Player> maybeWinner) {

@@ -29,6 +29,7 @@ public class ArchitectureTest {
             .layer(ROOT_PACKAGE).definedBy(ROOT_PACKAGE)
             .whereLayer(PRESENTATION_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE)
             .whereLayer(APPLICATION_LAYER).mayOnlyBeAccessedByLayers(PRESENTATION_LAYER)
-            .whereLayer(INFRASTRUCTURE_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE);
+            // HealthAPIController が infrastructure にアクセスするため、PRESENTATION_LAYER も許可
+            .whereLayer(INFRASTRUCTURE_LAYER).mayOnlyBeAccessedByLayers(ROOT_PACKAGE, PRESENTATION_LAYER);
 
 }

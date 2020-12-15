@@ -1,11 +1,12 @@
-package com.example.janken;
+package com.example.janken.presentation.api.health;
 
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import com.example.janken.infrastructure.jdbctransaction.SingleRowMapper;
+import com.example.janken.registry.ServiceLocator;
 import com.google.gson.Gson;
-import lombok.*;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/api/health")
-public class HealthController extends HttpServlet {
+public class HealthAPIController extends HttpServlet {
 
-    private TransactionManager tm = new JDBCTransactionManager();
+    private TransactionManager tm = ServiceLocator.resolve(TransactionManager.class);
     private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
     private Gson gson = new Gson();
 
@@ -42,12 +43,4 @@ public class HealthController extends HttpServlet {
         writer.flush();
     }
 
-}
-
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode
-@ToString
-class HealthResponseBody {
-    private int status;
 }
