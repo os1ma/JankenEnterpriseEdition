@@ -40,7 +40,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.example.janken.App'
+    mainClass = 'com.example.janken.JankenCLIApplication'
 }
 
 tasks.named('test') {

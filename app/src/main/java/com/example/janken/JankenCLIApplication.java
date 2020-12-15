@@ -17,7 +17,7 @@ import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
 import com.example.janken.presentation.cli.controller.JankenController;
 import com.example.janken.registry.ServiceLocator;
 
-public class App {
+public class JankenCLIApplication {
 
     public static void main(String[] args) {
 
