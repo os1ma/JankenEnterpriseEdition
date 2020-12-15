@@ -1,9 +1,9 @@
 package com.example.janken.presentation.api.health;
 
 import com.example.janken.domain.transaction.TransactionManager;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import com.example.janken.infrastructure.jdbctransaction.SingleRowMapper;
+import com.example.janken.presentation.api.APIControllerUtils;
 import com.example.janken.registry.ServiceLocator;
 import com.google.gson.Gson;
 import lombok.val;
@@ -26,21 +26,13 @@ public class HealthAPIController extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
-        // DB との疎通チェック
         tm.transactional(tx -> {
             simpleJDBCWrapper.findFirst(tx, new SingleRowMapper<Long>(), "SELECT 1");
         });
 
-        // レスポンスヘッダを設定
-        response.setContentType("application/json");
-
-        // レスポンスボディを設定
         val status = 200;
         val responseBody = new HealthResponseBody(status);
-        val responseBodyStr = gson.toJson(responseBody);
-        val writer = response.getWriter();
-        writer.print(responseBodyStr);
-        writer.flush();
+        APIControllerUtils.setResponseBody(response, responseBody);
     }
 
 }
