@@ -14,20 +14,10 @@
 ln -s ../../bin/pre-commit .git/hooks/pre-commit
 ```
 
-## 実行手順
-
-### CLI アプリケーション
+## 開発環境での実行手順
 
 ```shell
-./gradlew clean jar
-DATA_DIR="$(pwd)/data" java -jar app/build/libs/app.jar
-```
-
-### Web アプリケーション
-
-```shell
-./gradlew clean war
-java -jar app/build/server/webapp-runner-*.jar app/build/libs/*.war --port 8080
+./gradlew bootRun
 ```
 
 その後、以下の URL などにアクセス
