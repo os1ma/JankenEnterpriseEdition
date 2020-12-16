@@ -27,7 +27,7 @@ DATA_DIR="$(pwd)/data" java -jar app/build/libs/app.jar
 
 ```shell
 ./gradlew clean war
-docker-compose -f docker-compose.yaml -f docker-compose-tomcat.yaml up -d
+java -jar app/build/server/webapp-runner-*.jar app/build/libs/*.war --port 8080
 ```
 
 その後、以下の URL などにアクセス
