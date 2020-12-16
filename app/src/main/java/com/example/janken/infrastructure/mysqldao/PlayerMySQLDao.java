@@ -1,15 +1,17 @@
 package com.example.janken.infrastructure.mysqldao;
 
-import com.example.janken.infrastructure.dao.PlayerDao;
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.transaction.Transaction;
+import com.example.janken.infrastructure.dao.PlayerDao;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class PlayerMySQLDao implements PlayerDao {
 
     private static final String SELECT_FROM_CLAUSE = "SELECT id, name FROM players ";

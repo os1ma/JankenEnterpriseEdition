@@ -2,19 +2,14 @@ package com.example.janken.application.service;
 
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.JankenDetail;
-import com.example.janken.domain.model.janken.JankenRepository;
-import com.example.janken.domain.model.player.PlayerRepository;
 import com.example.janken.domain.transaction.Transaction;
-import com.example.janken.domain.transaction.TransactionManager;
-import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
-import com.example.janken.infrastructure.dao.PlayerDao;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
+import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
 import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
-import com.example.janken.registry.ServiceLocator;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -32,18 +27,16 @@ class JankenApplicationServiceTest {
 
         // 準備
 
-        ServiceLocator.register(TransactionManager.class, JDBCTransactionManager.class);
+        val tm = new JDBCTransactionManager();
 
-        ServiceLocator.register(PlayerRepository.class, PlayerMySQLRepository.class);
-        ServiceLocator.register(JankenRepository.class, JankenMySQLRepository.class);
+        val playerDao = new PlayerMySQLDao();
+        val jankenDao = new JankenMySQLDao();
+        val jankenDetailDao = new JankenDetailErrorDao();
 
-        ServiceLocator.register(PlayerDao.class, PlayerMySQLDao.class);
-        ServiceLocator.register(JankenDao.class, JankenMySQLDao.class);
-        ServiceLocator.register(JankenDetailDao.class, JankenDetailErrorDao.class);
+        val playerRepository = new PlayerMySQLRepository(playerDao);
+        val jankenRepository = new JankenMySQLRepository(jankenDao, jankenDetailDao);
 
-        val tm = ServiceLocator.resolve(TransactionManager.class);
-        val service = new JankenApplicationService();
-        val jankenDao = ServiceLocator.resolve(JankenDao.class);
+        val service = new JankenApplicationService(tm, jankenRepository, playerRepository);
 
         val jankenCountBeforeTest = tm.transactional(jankenDao::count);
 

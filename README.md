@@ -8,11 +8,10 @@
 
 ## 開発環境のセットアップ
 
-以下のコマンドにより、`git commit` 実行時にビルドが通るかローカルで検証されるようになります。
+プロジェクトホームで以下のコマンドを実行することで、Git の hook が設定され、`git commit` 実行時にビルドが通るかローカルで検証されるようになります。
 
 ```shell
-printf '#!/bin/bash\n'"$(pwd)"'/bin/build.sh\n' > .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
+ln -s ../../bin/pre-commit .git/hooks/pre-commit
 ```
 
 ## 実行手順
@@ -28,7 +27,7 @@ DATA_DIR="$(pwd)/data" java -jar app/build/libs/app.jar
 
 ```shell
 ./gradlew clean war
-docker-compose -f docker-compose.yaml -f docker-compose-tomcat.yaml up -d
+java -jar app/build/server/webapp-runner-*.jar app/build/libs/*.war --port 8080
 ```
 
 その後、以下の URL などにアクセス

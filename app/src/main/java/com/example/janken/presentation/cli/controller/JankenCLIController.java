@@ -1,27 +1,28 @@
-package com.example.janken.presentation.controller;
+package com.example.janken.presentation.cli.controller;
 
 import com.example.janken.application.service.JankenApplicationService;
 import com.example.janken.application.service.PlayerApplicationService;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.player.Player;
-import com.example.janken.presentation.view.View;
-import com.example.janken.registry.ServiceLocator;
+import com.example.janken.presentation.cli.view.StandardOutputView;
+import lombok.AllArgsConstructor;
 import lombok.val;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class JankenController {
+@AllArgsConstructor
+public class JankenCLIController {
 
     // ID は実際のアプリケーションでは認証情報から取得することが想定される
     private static final String PLAYER_1_ID = "1";
     private static final String PLAYER_2_ID = "2";
 
     private static final Scanner STDIN_SCANNER = new Scanner(System.in);
-    private static final String VIEW_RESOURCE_PREFIX = "view/";
+    private static final String VIEW_RESOURCE_PREFIX = "cli/view/";
 
-    private PlayerApplicationService playerApplicationService = ServiceLocator.resolve(PlayerApplicationService.class);
-    private JankenApplicationService jankenApplicationService = ServiceLocator.resolve(JankenApplicationService.class);
+    private PlayerApplicationService playerApplicationService;
+    private JankenApplicationService jankenApplicationService;
 
     public void play() {
         val player1 = playerApplicationService.findPlayerById(PLAYER_1_ID);
@@ -35,14 +36,14 @@ public class JankenController {
 
         val maybeWinner = jankenApplicationService.play(PLAYER_1_ID, player1Hand, PLAYER_2_ID, player2Hand);
 
-        new View(VIEW_RESOURCE_PREFIX + "result.vm")
+        new StandardOutputView(VIEW_RESOURCE_PREFIX + "result.vm")
                 .with("winner", maybeWinner.orElse(null))
                 .show();
     }
 
     private static Hand scanHand(Player player) {
         while (true) {
-            new View(VIEW_RESOURCE_PREFIX + "scan-prompt.vm")
+            new StandardOutputView(VIEW_RESOURCE_PREFIX + "scan-prompt.vm")
                     .with("player", player)
                     .with("hands", Hand.values())
                     .show();
@@ -59,7 +60,7 @@ public class JankenController {
             if (maybeHand.isPresent()) {
                 return maybeHand.get();
             } else {
-                new View(VIEW_RESOURCE_PREFIX + "invalid-input.vm")
+                new StandardOutputView(VIEW_RESOURCE_PREFIX + "invalid-input.vm")
                         .with("input", inputStr)
                         .show();
             }
@@ -67,7 +68,7 @@ public class JankenController {
     }
 
     private static void showHandWithName(Hand hand, Player player) {
-        new View(VIEW_RESOURCE_PREFIX + "show-hand.vm")
+        new StandardOutputView(VIEW_RESOURCE_PREFIX + "show-hand.vm")
                 .with("player", player)
                 .with("hand", hand)
                 .show();

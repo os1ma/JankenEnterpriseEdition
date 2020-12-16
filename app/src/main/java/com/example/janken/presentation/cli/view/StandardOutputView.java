@@ -1,4 +1,4 @@
-package com.example.janken.presentation.view;
+package com.example.janken.presentation.cli.view;
 
 import lombok.val;
 import org.apache.velocity.VelocityContext;
@@ -10,7 +10,7 @@ import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class View {
+public class StandardOutputView {
 
     static {
         Velocity.setProperty("resource.loader", "class");
@@ -23,20 +23,20 @@ public class View {
     private String templateName;
     private Map<String, Object> map;
 
-    private View(String templateName, Map<String, Object> map) {
+    private StandardOutputView(String templateName, Map<String, Object> map) {
         this.templateName = templateName;
         this.map = map;
     }
 
-    public View(String templateName) {
+    public StandardOutputView(String templateName) {
         this.templateName = templateName;
         this.map = new HashMap<>();
     }
 
-    public View with(String key, Object value) {
+    public StandardOutputView with(String key, Object value) {
         val newMap = new HashMap<String, Object>(map);
         newMap.put(key, value);
-        return new View(templateName, newMap);
+        return new StandardOutputView(templateName, newMap);
     }
 
     public void show() {

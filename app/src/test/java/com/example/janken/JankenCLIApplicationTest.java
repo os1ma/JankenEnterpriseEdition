@@ -1,13 +1,12 @@
 package com.example.janken;
 
-import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.transaction.TransactionManager;
 import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
-import com.example.janken.registry.ServiceLocator;
+import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
 import lombok.val;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +19,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AppTest {
+class JankenCLIApplicationTest {
 
     private static final String PLAYER_1_ID = "1";
     private static final String PLAYER_2_ID = "2";
@@ -81,7 +80,7 @@ class AppTest {
         // 実行
 
         val args = new String[0];
-        App.main(args);
+        JankenCLIApplication.main(args);
 
         // 検証
 
@@ -111,7 +110,7 @@ class AppTest {
 
             // 値の検証
 
-            val jankenRepository = ServiceLocator.resolve(JankenRepository.class);
+            val jankenRepository = new JankenMySQLRepository(jankenDao, jankenDetailDao);
             val savedJankens = jankenRepository.findAllOrderByPlayedAt(tx);
             val savedJanken = savedJankens.get(savedJankens.size() - 1);
             val savedJankenId = savedJanken.getId();
@@ -166,7 +165,7 @@ class AppTest {
         stdinSnatcher.inputLine(validInput1);
         stdinSnatcher.inputLine(validInput2);
         val args = new String[0];
-        App.main(args);
+        JankenCLIApplication.main(args);
 
         val actual = stdoutSnatcher.readAllLines();
         val expected = String.join(LINE_SEPARATOR, Arrays.asList(

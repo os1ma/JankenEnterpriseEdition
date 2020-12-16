@@ -5,17 +5,20 @@ import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
-import com.example.janken.registry.ServiceLocator;
+import lombok.AllArgsConstructor;
 import lombok.val;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
+@AllArgsConstructor
 public class JankenMySQLRepository implements JankenRepository {
 
-    private JankenDao jankenDao = ServiceLocator.resolve(JankenDao.class);
-    private JankenDetailDao jankenDetailDao = ServiceLocator.resolve(JankenDetailDao.class);
+    private JankenDao jankenDao;
+    private JankenDetailDao jankenDetailDao;
 
     @Override
     public List<Janken> findAllOrderByPlayedAt(Transaction tx) {
