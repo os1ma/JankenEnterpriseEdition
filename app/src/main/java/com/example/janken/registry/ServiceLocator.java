@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ServiceLocator {
 
     private static Map<Class<?>, ClassInstancePair> registry = new HashMap<>();

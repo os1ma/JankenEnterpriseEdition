@@ -1,8 +1,14 @@
 plugins {
-    id 'application'
-    id 'war'
+    id 'java'
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+
     id 'org.owasp.dependencycheck' version '6.0.3'
 }
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
 repositories {
     jcenter()
@@ -15,49 +21,26 @@ dependencies {
     implementation 'commons-collections:commons-collections:3.2.2'
 
     // Web
-    implementation 'javax.servlet:javax.servlet-api:4.0.1'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Database
-    implementation 'mysql:mysql-connector-java:8.0.22'
+    runtimeOnly 'mysql:mysql-connector-java'
 
     // Development tools
-    def lombokVersion = '1.18.16'
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     // Testing
-    def junitVersion = '5.6.2'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.14.1'
-
-    // Heroku
-    compile 'com.github.jsimone:webapp-runner:9.0.27.1'
 }
 
-application {
-    mainClass = 'com.example.janken.JankenCLIApplication'
-}
-
-tasks.named('test') {
+test {
     useJUnitPlatform()
-}
-
-run {
-    standardInput = System.in
-}
-
-jar {
-    // 依存関係を含む JAR ファイルをビルドする設定
-    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-
-    manifest {
-        attributes 'Main-Class': application.mainClass.orNull
-    }
 }
 
 dependencyCheck {
@@ -68,15 +51,6 @@ dependencyCheck {
 // 参考: https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku#using-webapp-runner-to-deploy-war-files
 
 task stage() {
-    dependsOn clean, war
+    dependsOn clean, jar
 }
-war.mustRunAfter clean
-
-task copyToLib(type: Copy) {
-    into "$buildDir/server"
-    from(configurations.compile) {
-        include "webapp-runner*"
-    }
-}
-
-war.dependsOn(copyToLib)
+jar.mustRunAfter clean

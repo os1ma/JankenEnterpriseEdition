@@ -84,11 +84,8 @@ main() {
   # ビルド
   "${PROJECT_HOME}/gradlew" \
     clean \
+    dependencyCheckAnalyze \
     build
-
-  # JAR の状態での実行をテスト
-  export DATA_DIR="${PROJECT_HOME}/data"
-  echo -e "0\n0" | java -jar "${JAR}"
 
   # クリーンアップ
   docker-compose down

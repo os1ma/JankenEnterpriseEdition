@@ -1,24 +1,22 @@
 package com.example.janken.presentation.api.janken;
 
 import com.example.janken.application.service.JankenApplicationService;
-import com.example.janken.presentation.api.APIControllerUtils;
-import com.example.janken.registry.ServiceLocator;
+import lombok.AllArgsConstructor;
 import lombok.val;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+@RestController
+@RequestMapping("/api/v1/jankens")
+@AllArgsConstructor
+public class JankenAPIController {
 
-@WebServlet("/api/v1/jankens")
-public class JankenAPIController extends HttpServlet {
+    private JankenApplicationService service;
 
-    private JankenApplicationService service = ServiceLocator.resolve(JankenApplicationService.class);
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
-        val requestBody = APIControllerUtils.getRequestBody(request, JankenPostRequestBody.class);
+    @PostMapping
+    public JankenPostResponseBody post(@RequestBody JankenPostRequestBody requestBody) {
 
         val maybeWinner = service.play(
                 requestBody.getPlayer1Id(),
@@ -26,8 +24,7 @@ public class JankenAPIController extends HttpServlet {
                 requestBody.getPlayer2Id(),
                 requestBody.player2Hand());
 
-        val responseBody = JankenPostResponseBody.of(maybeWinner);
-        APIControllerUtils.setResponseBody(response, responseBody);
+        return JankenPostResponseBody.of(maybeWinner);
     }
 
 }
