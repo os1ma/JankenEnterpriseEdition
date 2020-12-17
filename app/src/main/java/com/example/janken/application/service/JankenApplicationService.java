@@ -5,18 +5,17 @@ import com.example.janken.domain.model.janken.Janken;
 import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.model.player.PlayerRepository;
-import com.example.janken.domain.transaction.TransactionManager;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class JankenApplicationService {
-
-    private TransactionManager tm;
 
     private JankenRepository jankenRepository;
     private PlayerRepository playerRepository;
@@ -27,16 +26,12 @@ public class JankenApplicationService {
     public Optional<Player> play(String player1Id, Hand player1Hand,
                                  String player2Id, Hand player2Hand) {
 
-        return tm.transactional(tx -> {
+        val janken = Janken.play(player1Id, player1Hand, player2Id, player2Hand);
 
-            val janken = Janken.play(player1Id, player1Hand, player2Id, player2Hand);
+        jankenRepository.save(janken);
 
-            jankenRepository.save(tx, janken);
-
-            return janken.winnerPlayerId()
-                    .map(playerId -> playerRepository.findPlayerById(tx, playerId));
-        });
-
+        return janken.winnerPlayerId()
+                .map(playerId -> playerRepository.findPlayerById(playerId));
     }
 
 }

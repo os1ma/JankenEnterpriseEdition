@@ -9,5 +9,3 @@ services:
       MYSQL_DATABASE: janken
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    volumes:
-      - ${PWD}/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

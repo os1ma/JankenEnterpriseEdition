@@ -1,18 +1,16 @@
 package com.example.janken.domain.model.janken;
 
-import com.example.janken.domain.transaction.Transaction;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface JankenRepository {
 
-    List<Janken> findAllOrderByPlayedAt(Transaction tx);
+    List<Janken> findAllOrderByPlayedAt();
 
-    Optional<Janken> findById(Transaction tx, String id);
+    Optional<Janken> findById(String id);
 
-    long count(Transaction tx);
+    long count();
 
-    void save(Transaction tx, Janken janken);
+    void save(Janken janken);
 
 }
