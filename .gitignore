@@ -13,7 +13,7 @@ build/
 .settings
 .springBeans
 .sts4-cache
-bin/
+#bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
@@ -38,6 +38,9 @@ out/
 
 # Ignore Gradle build output directory
 /target/
+
+# jOOQ generated
+/app/src/main/java/com/example/janken/infrastructure/jooq/generated/
 
 # Data file
 data/jankens.csv

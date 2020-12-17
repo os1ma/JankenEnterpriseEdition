@@ -1,0 +1,89 @@
+def jooqVersion = '3.14.4'
+
+def dbHost = "${System.getenv()['MYSQL_HOST']}"
+def dbPort = "${System.getenv()['MYSQL_PORT']}"
+def dbSchema = "${System.getenv()['MYSQL_DATABASE']}"
+def dbUser = "${System.getenv()['MYSQL_USER']}"
+def dbPassword = "${System.getenv()['MYSQL_PASSWORD']}"
+def dbUrl = "jdbc:mysql://${dbHost}:${dbPort}/${dbSchema}"
+
+def jooqTargetDirectory = 'src/main/java'
+def jooqTargetPackageName = 'com.example.janken.infrastructure.jooq.generated'
+
+buildscript {
+    repositories {
+        maven {
+            url = uri('https://plugins.gradle.org/m2/')
+        }
+    }
+    dependencies {
+        classpath('nu.studer:gradle-jooq-plugin:4.1')
+        classpath('org.flywaydb:flyway-gradle-plugin:6.1.1')
+    }
+}
+
+apply plugin: nu.studer.gradle.jooq.JooqPlugin
+apply plugin: 'java'
+apply plugin: org.flywaydb.gradle.FlywayPlugin
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.jooq:jooq'
+    jooqRuntime 'mysql:mysql-connector-java'
+}
+
+flyway {
+    url = dbUrl
+    user = dbUser
+    password = dbPassword
+}
+
+// see https://qiita.com/nabedge/items/89fae15068e7a317a668
+// see https://github.com/nabedge/jooq-flyway-spboot-sample/blob/master/pj-db/build.gradle
+jooq {
+    version = jooqVersion
+    edition = 'OSS'
+    tables(sourceSets.main) {
+        jdbc {
+            driver = 'com.mysql.cj.jdbc.Driver'
+            url = dbUrl
+            user = dbUser
+            password = dbPassword
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            database {
+                name = 'org.jooq.meta.mysql.MySQLDatabase'
+                includes = '.*'
+                // Java9 以降で _ が識別子として使えないことの対策として information_schema を生成対象から除外
+                // see https://github.com/jOOQ/jOOQ/issues/4703
+                excludes = '(?i:information_schema\\..*)'
+            }
+            target {
+                directory = jooqTargetDirectory
+                packageName = jooqTargetPackageName
+            }
+            strategy {
+                name = null
+                matchers {
+                    tables {
+                        table {
+                            tableClass {
+                                transform = 'UPPER'
+                                expression = '\$0_TABLE'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+clean {
+    def cleanUpDirectory = jooqTargetDirectory + '/' + jooqTargetPackageName.tr('.', '/')
+    delete cleanUpDirectory
+}

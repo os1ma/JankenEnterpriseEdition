@@ -26,6 +26,8 @@ dependencies {
 
     // Database
     runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.flywaydb:flyway-core'
 
     // Development tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -46,6 +48,8 @@ test {
 dependencyCheck {
     failBuildOnCVSS = 7.0F
 }
+
+apply from: 'jooq-flyway.gradle'
 
 // Heroku の設定
 task stage() {

@@ -39,7 +39,7 @@ public class JDBCTransaction implements Transaction {
 
     public JDBCTransaction() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
             this.conn = DriverManager.getConnection(MYSQL_URL, MYSQL_USER, MYSQL_PASSWORD);
             conn.setAutoCommit(false);

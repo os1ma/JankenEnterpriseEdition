@@ -1,15 +1,12 @@
-package com.example.janken.application.service;
+package com.example.janken.infrastructure.jdbctransaction;
 
 import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.Janken;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
-import com.example.janken.infrastructure.mysqldao.PlayerMySQLDao;
-import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
-import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -20,39 +17,55 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class JankenApplicationServiceTest {
+class JDBCTransactionManagerTest {
+
+    private JDBCTransactionManager tm = new JDBCTransactionManager();
 
     @Test
-    public void じゃんけん明細保存時に例外が発生した場合じゃんけんも保存されない() {
-
+    public void トランザクションの中で保存されたデータが全て反映されている() {
         // 準備
-
-        val tm = new JDBCTransactionManager();
-
-        val playerDao = new PlayerMySQLDao();
         val jankenDao = new JankenMySQLDao();
-        val jankenDetailDao = new JankenDetailErrorDao();
-
-        val playerRepository = new PlayerMySQLRepository(playerDao);
-        val jankenRepository = new JankenMySQLRepository(jankenDao, jankenDetailDao);
-
-        val service = new JankenApplicationService(tm, jankenRepository, playerRepository);
+        val jankenDetailDao = new JankenDetailMySQLDao();
 
         val jankenCountBeforeTest = tm.transactional(jankenDao::count);
 
         // 実行
+        tm.transactional(tx -> {
+            val janken = Janken.play("1", Hand.STONE, "2", Hand.STONE);
 
+            jankenDao.insert(tx, janken);
+            jankenDetailDao.insertAll(tx, janken.details());
+        });
+
+        // 検証
+        val jankenCountAfterTest = tm.transactional(jankenDao::count);
+        assertEquals(jankenCountBeforeTest + 1, jankenCountAfterTest, "じゃんけんの件数が 1 つ増えている");
+    }
+
+    @Test
+    public void トランザクション処理の途中で例外が発生したら全て保存されない() {
+        // 準備
+        val jankenDao = new JankenMySQLDao();
+        val jankenDetailDao = new JankenDetailErrorDao();
+
+        val jankenCountBeforeTest = tm.transactional(jankenDao::count);
+
+        // 実行
         try {
-            service.play("1", Hand.STONE, "2", Hand.STONE);
+            tm.transactional(tx -> {
+                val janken = Janken.play("1", Hand.STONE, "2", Hand.STONE);
 
-            // 例外が発生しない場合はテスト失敗
+                jankenDao.insert(tx, janken);
+                jankenDetailDao.insertAll(tx, janken.details());
+            });
+
+            // 例外が発生しなかった場合
             fail();
         } catch (UnsupportedOperationException e) {
             // Do nothing
         }
 
         // 検証
-
         val jankenCountAfterTest = tm.transactional(jankenDao::count);
         assertEquals(jankenCountBeforeTest, jankenCountAfterTest, "じゃんけんの件数が増えていない");
     }

@@ -82,10 +82,7 @@ main() {
   wait_for_mysql_container_starting
 
   # ビルド
-  "${PROJECT_HOME}/gradlew" \
-    clean \
-    dependencyCheckAnalyze \
-    build
+  "${PROJECT_HOME}/bin/run.sh" build
 
   # クリーンアップ
   docker-compose down
