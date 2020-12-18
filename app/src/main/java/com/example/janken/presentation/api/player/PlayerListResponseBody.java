@@ -1,6 +1,6 @@
 package com.example.janken.presentation.api.player;
 
-import com.example.janken.application.service.player.PlayerFindAllOutput;
+import com.example.janken.application.query.PlayerListQueryModel;
 import lombok.*;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @ToString
 class PlayerListResponseBody {
 
-    static PlayerListResponseBody of(PlayerFindAllOutput output) {
+    static PlayerListResponseBody of(PlayerListQueryModel output) {
         val players = output.getPlayers().stream()
                 .map(p -> new PlayerListResponseBodyPlayer(
                         p.getId(),

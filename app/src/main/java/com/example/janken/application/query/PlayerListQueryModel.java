@@ -1,16 +1,16 @@
-package com.example.janken.application.service.player;
+package com.example.janken.application.query;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
-public class PlayerFindAllOutputPlayer {
-    private String id;
-    private String name;
-    private long winCount;
+public class PlayerListQueryModel {
+    private List<PlayerListQueryModelPlayer> players;
 }
