@@ -1,6 +1,6 @@
 package com.example.janken.presentation.api.janken;
 
-import com.example.janken.application.service.JankenApplicationService;
+import com.example.janken.application.service.janken.JankenApplicationService;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.validation.annotation.Validated;

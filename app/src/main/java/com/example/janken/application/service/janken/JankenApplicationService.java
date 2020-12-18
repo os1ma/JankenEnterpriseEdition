@@ -1,4 +1,4 @@
-package com.example.janken.application.service;
+package com.example.janken.application.service.janken;
 
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.Janken;
@@ -31,7 +31,7 @@ public class JankenApplicationService {
         jankenRepository.save(janken);
 
         return janken.winnerPlayerId()
-                .map(playerId -> playerRepository.findPlayerById(playerId));
+                .map(playerId -> playerRepository.findPlayerById(playerId).orElseThrow());
     }
 
 }

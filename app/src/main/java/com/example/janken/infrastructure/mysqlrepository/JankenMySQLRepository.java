@@ -32,6 +32,14 @@ public class JankenMySQLRepository implements JankenRepository {
     private DSLContext db;
 
     @Override
+    public List<Janken> findAll() {
+        val groups = selectFrom()
+                .fetchGroups(J);
+
+        return groups2Models(groups);
+    }
+
+    @Override
     public List<Janken> findAllOrderByPlayedAt() {
         val groups = selectFrom()
                 .orderBy(J.PLAYED_AT)
