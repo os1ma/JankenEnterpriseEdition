@@ -1,6 +1,6 @@
 package com.example.janken.presentation.api.player;
 
-import com.example.janken.application.query.PlayerListQueryModel;
+import com.example.janken.application.query.player.PlayerListQueryModel;
 import lombok.*;
 
 import java.util.List;

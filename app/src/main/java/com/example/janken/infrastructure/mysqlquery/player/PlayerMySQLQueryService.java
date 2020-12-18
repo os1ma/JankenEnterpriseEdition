@@ -1,8 +1,8 @@
-package com.example.janken.infrastructure.mysqlquery;
+package com.example.janken.infrastructure.mysqlquery.player;
 
-import com.example.janken.application.query.PlayerListQueryModel;
-import com.example.janken.application.query.PlayerListQueryModelPlayer;
-import com.example.janken.application.query.PlayerQueryService;
+import com.example.janken.application.query.player.PlayerListQueryModel;
+import com.example.janken.application.query.player.PlayerListQueryModelPlayer;
+import com.example.janken.application.query.player.PlayerQueryService;
 import com.example.janken.domain.model.janken.Result;
 import com.example.janken.infrastructure.jooq.generated.janken.tables.JANKEN_DETAILS_TABLE;
 import com.example.janken.infrastructure.jooq.generated.janken.tables.PLAYERS_TABLE;

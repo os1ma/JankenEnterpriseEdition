@@ -1,7 +1,7 @@
 package com.example.janken.application.service.player;
 
-import com.example.janken.application.query.PlayerListQueryModel;
-import com.example.janken.application.query.PlayerQueryService;
+import com.example.janken.application.query.player.PlayerListQueryModel;
+import com.example.janken.application.query.player.PlayerQueryService;
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.model.player.PlayerRepository;
 import lombok.AllArgsConstructor;

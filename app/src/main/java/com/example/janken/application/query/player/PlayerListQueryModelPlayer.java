@@ -1,4 +1,4 @@
-package com.example.janken.application.query;
+package com.example.janken.application.query.player;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
