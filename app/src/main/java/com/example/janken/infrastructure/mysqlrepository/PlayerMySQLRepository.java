@@ -2,8 +2,8 @@ package com.example.janken.infrastructure.mysqlrepository;
 
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.model.player.PlayerRepository;
-import com.example.janken.infrastructure.jooq.generated.janken.tables.PLAYERS_TABLE;
-import com.example.janken.infrastructure.jooq.generated.janken.tables.records.PlayersRecord;
+import com.example.janken.infrastructure.jooq.generated.tables.PLAYERS_TABLE;
+import com.example.janken.infrastructure.jooq.generated.tables.records.PlayersRecord;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.jooq.DSLContext;
