@@ -8,7 +8,6 @@ set -o xtrace
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")"; pwd)"
 readonly PROJECT_HOME="${SCRIPT_DIR}/.."
 
-readonly JAR=${PROJECT_HOME}"/app/build/libs/app.jar"
 readonly DB_SERVICE='mysql'
 
 #

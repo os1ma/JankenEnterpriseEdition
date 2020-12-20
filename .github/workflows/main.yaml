@@ -1,29 +1,29 @@
-name: workflow
+name: main
 
 on:
   push:
     branches:
-    - develop
-  schedule:
-    # 日本時間で毎晩 21 時
-    - cron: '0 12 * * *'
+    - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - uses: actions/cache@v2
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
+
     - uses: actions/setup-java@v1
       with:
         java-version: '11.0.9'
         java-package: jdk
         architecture: x64
     - run: ./bin/build.sh
+
     - name: Archive reports
       uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -36,3 +36,8 @@ jobs:
         name: libs
         path: ./app/build/libs/**
         if-no-files-found: error
+
+    - name: Install Heroku CLI
+      run: curl https://cli-assets.heroku.com/install.sh | sh
+    - name: Deploy
+      run: ./bin/deploy.sh
