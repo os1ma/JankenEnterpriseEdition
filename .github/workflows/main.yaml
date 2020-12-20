@@ -41,3 +41,5 @@ jobs:
       run: curl https://cli-assets.heroku.com/install.sh | sh
     - name: Deploy
       run: ./bin/deploy.sh
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
