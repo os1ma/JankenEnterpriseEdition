@@ -1,10 +1,14 @@
-package com.example.janken.application.service;
+package com.example.janken.application.service.player;
 
+import com.example.janken.application.query.player.PlayerListQueryModel;
+import com.example.janken.application.query.player.PlayerQueryService;
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.model.player.PlayerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -12,8 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerApplicationService {
 
     private PlayerRepository playerRepository;
+    private PlayerQueryService playerQueryService;
 
-    public Player findPlayerById(String playerId) {
+    public PlayerListQueryModel findAll() {
+        return playerQueryService.queryAll();
+    }
+
+    public Optional<Player> findPlayerById(String playerId) {
         return playerRepository.findPlayerById(playerId);
     }
 

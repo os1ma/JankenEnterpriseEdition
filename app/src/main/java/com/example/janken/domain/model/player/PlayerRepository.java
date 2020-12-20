@@ -1,7 +1,12 @@
 package com.example.janken.domain.model.player;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface PlayerRepository {
 
-    Player findPlayerById(String playerId);
+    List<Player> findAllOrderById();
+
+    Optional<Player> findPlayerById(String playerId);
 
 }

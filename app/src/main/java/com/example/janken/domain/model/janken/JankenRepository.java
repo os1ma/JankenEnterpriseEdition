@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public interface JankenRepository {
 
+    List<Janken> findAll();
+
     List<Janken> findAllOrderByPlayedAt();
 
     Optional<Janken> findById(String id);

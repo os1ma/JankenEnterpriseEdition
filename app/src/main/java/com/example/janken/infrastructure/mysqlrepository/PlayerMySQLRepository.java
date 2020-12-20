@@ -12,6 +12,7 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,15 +24,24 @@ public class PlayerMySQLRepository implements PlayerRepository {
     private DSLContext db;
 
     @Override
-    public Player findPlayerById(String playerId) {
+    public List<Player> findAllOrderById() {
+        val records = selectFrom()
+                .orderBy(P.ID)
+                .fetch()
+                .into(PlayersRecord.class);
+
+        return records2Models(records);
+    }
+
+    @Override
+    public Optional<Player> findPlayerById(String playerId) {
         val records = selectFrom()
                 .where(P.ID.eq(playerId))
                 .fetch()
                 .into(PlayersRecord.class);
 
         return records2Models(records).stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Player not exist. playerId = " + playerId));
+                .findFirst();
     }
 
     // private methods

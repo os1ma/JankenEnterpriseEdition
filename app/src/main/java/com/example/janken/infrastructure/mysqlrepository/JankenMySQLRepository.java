@@ -26,10 +26,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JankenMySQLRepository implements JankenRepository {
 
-    private static final JANKENS_TABLE J = JANKENS_TABLE.JANKENS.as("J");
-    private static final JANKEN_DETAILS_TABLE JD = JANKEN_DETAILS_TABLE.JANKEN_DETAILS.as("JD");
+    private static final JANKENS_TABLE J = JANKENS_TABLE.JANKENS.as("j");
+    private static final JANKEN_DETAILS_TABLE JD = JANKEN_DETAILS_TABLE.JANKEN_DETAILS.as("jd");
 
     private DSLContext db;
+
+    @Override
+    public List<Janken> findAll() {
+        val groups = selectFrom()
+                .fetchGroups(J);
+
+        return groups2Models(groups);
+    }
 
     @Override
     public List<Janken> findAllOrderByPlayedAt() {

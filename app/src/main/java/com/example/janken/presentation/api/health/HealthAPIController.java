@@ -1,27 +1,28 @@
 package com.example.janken.presentation.api.health;
 
-import com.example.janken.domain.transaction.TransactionManager;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
-import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
-import com.example.janken.infrastructure.jdbctransaction.SingleRowMapper;
+import com.example.janken.application.service.health.HealthApplicationService;
+import lombok.AllArgsConstructor;
+import lombok.val;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/health")
+@AllArgsConstructor
 public class HealthAPIController {
 
-    private TransactionManager tm = new JDBCTransactionManager();
-    private SimpleJDBCWrapper simpleJDBCWrapper = new SimpleJDBCWrapper();
+    private HealthApplicationService service;
 
     @GetMapping
-    public HealthResponseBody get() {
-        tm.transactional(tx -> {
-            simpleJDBCWrapper.findFirst(tx, new SingleRowMapper<Long>(), "SELECT 1");
-        });
+    public ResponseEntity<HealthResponseBody> get() {
+        val isHealthy = service.isHealthy();
 
-        return new HealthResponseBody(200);
+        val status = isHealthy ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE;
+        val responseBody = new HealthResponseBody(status.value());
+        return ResponseEntity.ok(responseBody);
     }
 
 }

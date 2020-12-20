@@ -1,5 +1,6 @@
 package com.example.janken.domain.model.janken;
 
+import com.example.janken.domain.model.player.Player;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -73,6 +74,22 @@ public class Janken {
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * 引数のプレイヤーが勝者かを返却します。
+     * <p>
+     * プレイヤーがじゃんけんの参加者でなかった場合は勝者ではないので false を返します。
+     */
+    public boolean isWinner(Player player) {
+        return details().stream()
+                // そのプレイヤーのじゃんけん明細にしぼる
+                .filter(d -> d.getPlayerId().equals(player.getId()))
+                .findFirst()
+                // 勝利かどうかに変換
+                .map(JankenDetail::isResultWin)
+                // 存在しなければ勝利ではないとする
+                .orElse(false);
     }
 
 }

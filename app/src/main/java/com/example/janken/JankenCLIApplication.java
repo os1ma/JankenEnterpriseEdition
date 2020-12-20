@@ -1,9 +1,10 @@
 package com.example.janken;
 
-import com.example.janken.application.service.JankenApplicationService;
-import com.example.janken.application.service.PlayerApplicationService;
+import com.example.janken.application.service.janken.JankenApplicationService;
+import com.example.janken.application.service.player.PlayerApplicationService;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
+import com.example.janken.infrastructure.mysqlquery.player.PlayerMySQLQueryService;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
 import com.example.janken.infrastructure.mysqlrepository.PlayerMySQLRepository;
 import com.example.janken.presentation.cli.controller.JankenCLIController;
@@ -26,7 +27,9 @@ public class JankenCLIApplication {
             val playerRepository = new PlayerMySQLRepository(dslContext);
             val jankenRepository = new JankenMySQLRepository(dslContext);
 
-            val playerApplicationService = new PlayerApplicationService(playerRepository);
+            val playerQueryService = new PlayerMySQLQueryService(dslContext);
+
+            val playerApplicationService = new PlayerApplicationService(playerRepository, playerQueryService);
             val jankenApplicationService = new JankenApplicationService(jankenRepository, playerRepository);
 
             val jankenCliController = new JankenCLIController(playerApplicationService, jankenApplicationService);
