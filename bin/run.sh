@@ -52,7 +52,7 @@ main() {
       ;;
 
     *)
-      err "Unexpected sub command : '${sub_command}'"
+      $@
       ;;
 
   esac
