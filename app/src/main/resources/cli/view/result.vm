@@ -1,3 +1,5 @@
+$player1Name selected $player1Hand
+$player2Name selected $player2Hand
 #if(!$winner)
 DRAW !!!
 #else

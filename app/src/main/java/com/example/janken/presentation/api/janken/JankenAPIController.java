@@ -19,13 +19,13 @@ public class JankenAPIController {
     @PostMapping
     public JankenPostResponseBody post(@RequestBody @Validated JankenPostRequestBody requestBody) {
 
-        val maybeWinner = service.play(
+        val output = service.play(
                 requestBody.getPlayer1Id(),
                 requestBody.player1Hand(),
                 requestBody.getPlayer2Id(),
                 requestBody.player2Hand());
 
-        return JankenPostResponseBody.of(maybeWinner);
+        return JankenPostResponseBody.of(output);
     }
 
 }

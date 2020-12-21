@@ -1,5 +1,8 @@
 package com.example.janken.presentation.cli.view;
 
+import com.example.janken.presentation.cli.controller.CLIController;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.val;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -10,7 +13,9 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StandardOutputView {
 
     static {
@@ -22,13 +27,11 @@ public class StandardOutputView {
         Velocity.init();
     }
 
+    private static final Scanner STDIN_SCANNER = new Scanner(System.in);
+
     private String templateName;
     private Map<String, Object> map;
-
-    private StandardOutputView(String templateName, Map<String, Object> map) {
-        this.templateName = templateName;
-        this.map = map;
-    }
+    private CLIController next;
 
     public StandardOutputView(String templateName) {
         this.templateName = templateName;
@@ -36,9 +39,13 @@ public class StandardOutputView {
     }
 
     public StandardOutputView with(String key, Object value) {
-        val newMap = new HashMap<String, Object>(map);
+        val newMap = new HashMap<>(map);
         newMap.put(key, value);
-        return new StandardOutputView(templateName, newMap);
+        return new StandardOutputView(templateName, newMap, next);
+    }
+
+    public StandardOutputView next(CLIController next) {
+        return new StandardOutputView(templateName, map, next);
     }
 
     public void show() {
@@ -51,6 +58,12 @@ public class StandardOutputView {
             template.merge(vc, sw);
 
             System.out.print(sw.toString());
+
+            // 次がある場合は進む
+            if (next != null) {
+                val input = STDIN_SCANNER.nextLine();
+                next.handle(input);
+            }
 
         } catch (IOException e) {
             throw new UncheckedIOException(e);
