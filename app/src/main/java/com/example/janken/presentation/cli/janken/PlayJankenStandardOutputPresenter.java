@@ -1,4 +1,4 @@
-package com.example.janken.presentation.cli.controller;
+package com.example.janken.presentation.cli.janken;
 
 import com.example.janken.application.scenario.PlayJankenOutputPort;
 import com.example.janken.domain.model.janken.Hand;
