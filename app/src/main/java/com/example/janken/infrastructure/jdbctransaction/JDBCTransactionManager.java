@@ -2,12 +2,10 @@ package com.example.janken.infrastructure.jdbctransaction;
 
 import com.example.janken.domain.transaction.TransactionManager;
 import lombok.val;
-import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Component
 public class JDBCTransactionManager implements TransactionManager<JDBCTransaction> {
 
     @Override
