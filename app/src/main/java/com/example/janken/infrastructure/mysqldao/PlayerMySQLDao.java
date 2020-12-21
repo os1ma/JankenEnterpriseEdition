@@ -1,8 +1,8 @@
 package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.model.player.Player;
-import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.PlayerDao;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class PlayerMySQLDao implements PlayerDao {
+public class PlayerMySQLDao implements PlayerDao<JDBCTransaction> {
 
     private static final String SELECT_FROM_CLAUSE = "SELECT id, name FROM players ";
 
@@ -20,7 +20,7 @@ public class PlayerMySQLDao implements PlayerDao {
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
 
     @Override
-    public Player findPlayerById(Transaction tx, String playerId) {
+    public Player findPlayerById(JDBCTransaction tx, String playerId) {
         val sql = SELECT_FROM_CLAUSE + "WHERE id = ?";
         return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, playerId).get();
     }

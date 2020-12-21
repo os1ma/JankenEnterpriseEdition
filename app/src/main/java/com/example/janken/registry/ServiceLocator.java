@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Deprecated
 public class ServiceLocator {
 
     private static Map<Class<?>, ClassInstancePair> registry = new HashMap<>();
@@ -18,7 +17,7 @@ public class ServiceLocator {
      * <p>
      * 登録時点ではインスタンスは作成しません。
      */
-    public static <T, U> void register(Class<T> interfaceClass, Class<U> implementationClass) {
+    public static <T, U extends T> void register(Class<T> interfaceClass, Class<U> implementationClass) {
         val classInstancePair = new ClassInstancePair(implementationClass, null);
         registry.put(interfaceClass, classInstancePair);
     }

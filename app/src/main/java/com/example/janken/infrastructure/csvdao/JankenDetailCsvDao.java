@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class JankenDetailCsvDao implements JankenDetailDao {
+public class JankenDetailCsvDao implements JankenDetailDao<Transaction> {
 
     private static final String JANKEN_DETAILS_CSV = CsvDaoUtils.DATA_DIR + "janken_details.csv";
 

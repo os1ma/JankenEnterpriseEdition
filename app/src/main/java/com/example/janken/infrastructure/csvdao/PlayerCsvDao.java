@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class PlayerCsvDao implements PlayerDao {
+public class PlayerCsvDao implements PlayerDao<Transaction> {
 
     private static final String PLAYERS_CSV = CsvDaoUtils.DATA_DIR + "players.csv";
 

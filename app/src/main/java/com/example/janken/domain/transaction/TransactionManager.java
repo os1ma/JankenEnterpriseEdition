@@ -3,7 +3,7 @@ package com.example.janken.domain.transaction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface TransactionManager {
+public interface TransactionManager<T extends Transaction> {
 
     /**
      * 以下の流れで戻り値のあるトランザクション処理を実行します。
@@ -17,7 +17,7 @@ public interface TransactionManager {
      * <p>
      * 引数の処理の途中で例外が発生した場合は、コミットせずにトランザクションを終了します。
      */
-    <U> U transactional(Function<Transaction, U> f);
+    <U> U transactional(Function<T, U> f);
 
     /**
      * 以下の流れで戻り値のないトランザクション処理を実行します。
@@ -30,6 +30,6 @@ public interface TransactionManager {
      * <p>
      * 引数の処理の途中で例外が発生した場合は、コミットせずにトランザクションを終了します。
      */
-    void transactional(Consumer<Transaction> c);
+    void transactional(Consumer<T> c);
 
 }

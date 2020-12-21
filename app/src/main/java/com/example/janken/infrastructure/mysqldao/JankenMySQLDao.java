@@ -1,9 +1,9 @@
 package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.model.janken.Janken;
-import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDao;
 import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class JankenMySQLDao implements JankenDao {
+public class JankenMySQLDao implements JankenDao<JDBCTransaction> {
 
     private static final String TABLE_NAME = "jankens";
 
@@ -28,24 +28,24 @@ public class JankenMySQLDao implements JankenDao {
     private JankenInsertMapper insertMapper = new JankenInsertMapper();
 
     @Override
-    public List<Janken> findAllOrderByPlayedAt(Transaction tx) {
+    public List<Janken> findAllOrderByPlayedAt(JDBCTransaction tx) {
         val sql = SELECT_FROM_CALUSE + "ORDER BY played_at";
         return simpleJDBCWrapper.findList(tx, rowMapper, sql);
     }
 
     @Override
-    public Optional<Janken> findById(Transaction tx, String id) {
+    public Optional<Janken> findById(JDBCTransaction tx, String id) {
         val sql = SELECT_FROM_CALUSE + "WHERE id = ?";
         return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, id);
     }
 
     @Override
-    public long count(Transaction tx) {
+    public long count(JDBCTransaction tx) {
         return simpleJDBCWrapper.count(tx, TABLE_NAME);
     }
 
     @Override
-    public void insert(Transaction tx, Janken janken) {
+    public void insert(JDBCTransaction tx, Janken janken) {
         simpleJDBCWrapper.insertOne(tx, insertMapper, TABLE_NAME, janken);
     }
 

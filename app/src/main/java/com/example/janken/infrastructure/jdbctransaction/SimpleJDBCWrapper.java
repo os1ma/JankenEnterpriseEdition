@@ -1,6 +1,5 @@
 package com.example.janken.infrastructure.jdbctransaction;
 
-import com.example.janken.domain.transaction.Transaction;
 import lombok.val;
 
 import java.sql.PreparedStatement;
@@ -13,12 +12,12 @@ import java.util.stream.LongStream;
 
 public class SimpleJDBCWrapper {
 
-    public <T> List<T> findList(Transaction tx,
+    public <T> List<T> findList(JDBCTransaction tx,
                                 RowMapper<T> mapper,
                                 String sql,
                                 Object... params) {
 
-        val conn = ((JDBCTransaction) tx).getConn();
+        val conn = tx.getConn();
 
         try (val stmt = conn.prepareStatement(sql)) {
 
@@ -33,7 +32,7 @@ public class SimpleJDBCWrapper {
         }
     }
 
-    public <T> Optional<T> findFirst(Transaction tx,
+    public <T> Optional<T> findFirst(JDBCTransaction tx,
                                      RowMapper<T> mapper,
                                      String sql,
                                      Object... params) {
@@ -43,7 +42,7 @@ public class SimpleJDBCWrapper {
                 .findFirst();
     }
 
-    public long count(Transaction tx,
+    public long count(JDBCTransaction tx,
                       String tableName) {
 
         val sql = "SELECT COUNT(*) FROM " + tableName;
@@ -52,7 +51,7 @@ public class SimpleJDBCWrapper {
         return findList(tx, mapper, sql).get(0);
     }
 
-    public <T> void insertAll(Transaction tx,
+    public <T> void insertAll(JDBCTransaction tx,
                               InsertMapper<T> mapper,
                               String tableName,
                               List<T> objects) {
@@ -74,7 +73,7 @@ public class SimpleJDBCWrapper {
                         .map(Map.Entry::getValue))
                 .toArray();
 
-        val conn = ((JDBCTransaction) tx).getConn();
+        val conn = tx.getConn();
 
         try (val stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -87,7 +86,7 @@ public class SimpleJDBCWrapper {
         }
     }
 
-    public <T> void insertOne(Transaction tx,
+    public <T> void insertOne(JDBCTransaction tx,
                               InsertMapper<T> mapper,
                               String tableName,
                               T object) {

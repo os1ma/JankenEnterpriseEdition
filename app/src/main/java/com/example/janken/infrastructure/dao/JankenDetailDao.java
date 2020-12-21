@@ -6,16 +6,16 @@ import com.example.janken.domain.transaction.Transaction;
 import java.util.List;
 import java.util.Optional;
 
-public interface JankenDetailDao {
+public interface JankenDetailDao<T extends Transaction> {
 
-    List<JankenDetail> findAllOrderById(Transaction tx);
+    List<JankenDetail> findAllOrderById(T tx);
 
-    List<JankenDetail> findByJankenIdOrderById(Transaction tx, String jankenId);
+    List<JankenDetail> findByJankenIdOrderById(T tx, String jankenId);
 
-    Optional<JankenDetail> findById(Transaction tx, String id);
+    Optional<JankenDetail> findById(T tx, String id);
 
-    long count(Transaction tx);
+    long count(T tx);
 
-    void insertAll(Transaction tx, List<JankenDetail> jankenDetails);
+    void insertAll(T tx, List<JankenDetail> jankenDetails);
 
 }
