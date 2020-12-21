@@ -12,6 +12,11 @@ public enum Hand {
     PAPER(1, "PAPER"),
     SCISSORS(2, "SCISSORS");
 
+    public static boolean isValid(int value) {
+        return Arrays.stream(Hand.values())
+                .anyMatch(h -> h.getValue() == value);
+    }
+
     public static Hand of(int value) {
         return Arrays.stream(Hand.values())
                 .filter(h -> h.getValue() == value)
