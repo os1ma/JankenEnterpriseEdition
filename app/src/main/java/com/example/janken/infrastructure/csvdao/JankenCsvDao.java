@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class JankenCsvDao implements JankenDao {
+public class JankenCsvDao implements JankenDao<Transaction> {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static final String JANKENS_CSV = CsvDaoUtils.DATA_DIR + "jankens.csv";

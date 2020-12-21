@@ -1,8 +1,5 @@
 package com.example.janken;
 
-import com.example.janken.domain.transaction.TransactionManager;
-import com.example.janken.infrastructure.dao.JankenDao;
-import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
@@ -36,9 +33,9 @@ class JankenCLIApplicationTest {
     private static StandardInputSnatcher stdinSnatcher;
     private static StandardOutputSnatcher stdoutSnatcher;
 
-    private static TransactionManager tm = new JDBCTransactionManager();
-    private static JankenDao jankenDao = new JankenMySQLDao();
-    private static JankenDetailDao jankenDetailDao = new JankenDetailMySQLDao();
+    private static JDBCTransactionManager tm = new JDBCTransactionManager();
+    private static JankenMySQLDao jankenDao = new JankenMySQLDao();
+    private static JankenDetailMySQLDao jankenDetailDao = new JankenDetailMySQLDao();
 
     @BeforeAll
     static void setup() {

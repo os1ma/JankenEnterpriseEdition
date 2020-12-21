@@ -3,9 +3,9 @@ package com.example.janken.infrastructure.mysqldao;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.Result;
-import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.infrastructure.jdbctransaction.InsertMapper;
+import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.RowMapper;
 import com.example.janken.infrastructure.jdbctransaction.SimpleJDBCWrapper;
 import lombok.val;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class JankenDetailMySQLDao implements JankenDetailDao {
+public class JankenDetailMySQLDao implements JankenDetailDao<JDBCTransaction> {
 
     private static final String TABLE_NAME = "janken_details";
 
@@ -30,30 +30,30 @@ public class JankenDetailMySQLDao implements JankenDetailDao {
     private JankenDetailInsertMapper insertMapper = new JankenDetailInsertMapper();
 
     @Override
-    public List<JankenDetail> findAllOrderById(Transaction tx) {
+    public List<JankenDetail> findAllOrderById(JDBCTransaction tx) {
         val sql = SELECT_FROM_CLAUSE + "ORDER BY id";
         return simpleJDBCWrapper.findList(tx, rowMapper, sql);
     }
 
     @Override
-    public List<JankenDetail> findByJankenIdOrderById(Transaction tx, String jankenId) {
+    public List<JankenDetail> findByJankenIdOrderById(JDBCTransaction tx, String jankenId) {
         val sql = SELECT_FROM_CLAUSE + "WHERE janken_id = ? ORDER BY ID";
         return simpleJDBCWrapper.findList(tx, rowMapper, sql, jankenId);
     }
 
     @Override
-    public Optional<JankenDetail> findById(Transaction tx, String id) {
+    public Optional<JankenDetail> findById(JDBCTransaction tx, String id) {
         val sql = SELECT_FROM_CLAUSE + "WHERE id = ?";
         return simpleJDBCWrapper.findFirst(tx, rowMapper, sql, id);
     }
 
     @Override
-    public long count(Transaction tx) {
+    public long count(JDBCTransaction tx) {
         return simpleJDBCWrapper.count(tx, TABLE_NAME);
     }
 
     @Override
-    public void insertAll(Transaction tx, List<JankenDetail> jankenDetails) {
+    public void insertAll(JDBCTransaction tx, List<JankenDetail> jankenDetails) {
         simpleJDBCWrapper.insertAll(tx, insertMapper, TABLE_NAME, jankenDetails);
     }
 

@@ -73,7 +73,7 @@ class JDBCTransactionManagerTest {
 }
 
 @NoArgsConstructor
-class JankenDetailErrorDao implements JankenDetailDao {
+class JankenDetailErrorDao implements JankenDetailDao<Transaction> {
 
     @Override
     public List<JankenDetail> findAllOrderById(Transaction tx) {
