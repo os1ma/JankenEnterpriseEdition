@@ -40,6 +40,10 @@ public class ServiceLocator {
         return (T) registry.get(interfaceClass).getInstance();
     }
 
+    public static void reset() {
+        registry = new HashMap<>();
+    }
+
 }
 
 @AllArgsConstructor
