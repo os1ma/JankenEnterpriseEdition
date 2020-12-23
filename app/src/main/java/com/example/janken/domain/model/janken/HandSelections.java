@@ -1,9 +1,6 @@
 package com.example.janken.domain.model.janken;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,17 +22,25 @@ public class HandSelections {
         return list.size() >= 2;
     }
 
-    public List<Hand> hands() {
-        return list.stream()
+    public Hands hands() {
+        val handList = list.stream()
                 .map(HandSelection::getHand)
-                .distinct()
                 .collect(Collectors.toList());
+        return new Hands(handList);
     }
 
     public <T> List<T> map(Function<HandSelection, ? extends T> f) {
         return list.stream()
                 .map(f)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isDraw() {
+        return hands().isDraw();
+    }
+
+    public Hand winningHand() {
+        return hands().winningHand();
     }
 
 }

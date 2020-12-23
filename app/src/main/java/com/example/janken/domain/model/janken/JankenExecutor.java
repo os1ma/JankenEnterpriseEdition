@@ -27,23 +27,17 @@ public class JankenExecutor {
             throw new IllegalArgumentException("handSelections does not have enough elements. handSelections = " + handSelections);
         }
 
-        val selectedHands = handSelections.hands();
-
-        // 1 種類の手しか選ばれていないか全ての手が選ばれている場合はあいこ
-        val selectedHandTypes = selectedHands.size();
-        if (selectedHandTypes == 1 || selectedHandTypes == Hand.values().length) {
+        if (handSelections.isDraw()) {
             return handSelections.map(hs -> new JankenDetail(generateId(), jankenId, hs, Result.DRAW));
+
+        } else {
+            val winningHand = handSelections.winningHand();
+            return handSelections.map(hs -> {
+                val result = hs.getHand().equals(winningHand) ? Result.WIN : Result.LOSE;
+                return new JankenDetail(generateId(), jankenId, hs, result);
+            });
         }
 
-        // あいこではない場合
-        val hand1 = selectedHands.get(0);
-        val hand2 = selectedHands.get(1);
-        val winningHand = hand1.wins(hand2) ? hand1 : hand2;
-
-        return handSelections.map(hs -> {
-            val result = hs.getHand().equals(winningHand) ? Result.WIN : Result.LOSE;
-            return new JankenDetail(generateId(), jankenId, hs, result);
-        });
     }
 
 }
