@@ -19,11 +19,11 @@ public class Hands {
     }
 
     public Hand winningHand() {
-        val distinctedHandList = distinctedHandList();
-
         if (isDraw()) {
             throw new NoSuchElementException("Winning hand not exist. list = " + list);
         }
+
+        val distinctedHandList = distinctedHandList();
 
         val hand1 = distinctedHandList.get(0);
         val hand2 = distinctedHandList.get(1);
