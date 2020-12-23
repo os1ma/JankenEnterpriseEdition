@@ -1,8 +1,8 @@
 package com.example.janken.infrastructure.jdbctransaction;
 
 import com.example.janken.domain.model.janken.Hand;
-import com.example.janken.domain.model.janken.Janken;
 import com.example.janken.domain.model.janken.JankenDetail;
+import com.example.janken.domain.model.janken.JankenExecutor;
 import com.example.janken.domain.transaction.Transaction;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class JDBCTransactionManagerTest {
 
     private JDBCTransactionManager tm = new JDBCTransactionManager();
+    private JankenExecutor jankenExecutor = new JankenExecutor();
 
     @Test
     public void トランザクションの中で保存されたデータが全て反映されている() {
@@ -31,7 +32,7 @@ class JDBCTransactionManagerTest {
 
         // 実行
         tm.transactional(tx -> {
-            val janken = Janken.play("1", Hand.STONE, "2", Hand.STONE);
+            val janken = jankenExecutor.play("1", Hand.STONE, "2", Hand.STONE);
 
             jankenDao.insert(tx, janken);
             jankenDetailDao.insertAll(tx, janken.details());
@@ -53,7 +54,7 @@ class JDBCTransactionManagerTest {
         // 実行
         try {
             tm.transactional(tx -> {
-                val janken = Janken.play("1", Hand.STONE, "2", Hand.STONE);
+                val janken = jankenExecutor.play("1", Hand.STONE, "2", Hand.STONE);
 
                 jankenDao.insert(tx, janken);
                 jankenDetailDao.insertAll(tx, janken.details());
