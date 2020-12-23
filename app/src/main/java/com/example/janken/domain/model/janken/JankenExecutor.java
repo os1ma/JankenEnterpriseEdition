@@ -4,6 +4,7 @@ import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -39,11 +40,12 @@ public class JankenExecutor {
 
         val detail1 = new JankenDetail(jankenDetail1Id, jankenId, handSelection1, player1Result);
         val detail2 = new JankenDetail(jankenDetail2Id, jankenId, handSelection2, player2Result);
+        val details = List.of(detail1, detail2);
 
         // じゃんけんを生成
 
         val playedAt = LocalDateTime.now();
-        return new Janken(jankenId, playedAt, detail1, detail2);
+        return new Janken(jankenId, playedAt, details);
     }
 
     private String generateId() {

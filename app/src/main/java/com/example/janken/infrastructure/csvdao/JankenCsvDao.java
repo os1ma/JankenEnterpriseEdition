@@ -69,7 +69,7 @@ public class JankenCsvDao implements JankenDao<Transaction> {
         val jankenId = values[0];
         val playedAt = LocalDateTime.parse(values[1], DATE_TIME_FORMATTER);
 
-        return new Janken(jankenId, playedAt, null, null);
+        return new Janken(jankenId, playedAt, null);
     }
 
     private String janken2Line(Janken janken) {

@@ -35,7 +35,9 @@ public class JankenApplicationService {
 
         jankenRepository.save(janken);
 
-        return janken.winnerPlayerId()
+        return janken.winnerPlayerIds()
+                .stream()
+                .findFirst()
                 .map(playerId -> playerRepository.findPlayerById(playerId).orElseThrow());
     }
 

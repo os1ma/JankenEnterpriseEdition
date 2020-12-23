@@ -56,7 +56,7 @@ class JankenRowMapper implements RowMapper<Janken> {
         val id = rs.getString(1);
         val playedAt = rs.getTimestamp(2).toLocalDateTime();
 
-        return new Janken(id, playedAt, null, null);
+        return new Janken(id, playedAt, null);
     }
 
 }

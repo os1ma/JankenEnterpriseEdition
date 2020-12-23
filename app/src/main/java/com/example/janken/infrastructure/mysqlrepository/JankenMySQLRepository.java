@@ -71,7 +71,7 @@ public class JankenMySQLRepository implements JankenRepository {
                 .set(jRecord)
                 .execute();
 
-        val jdRecords = jankenDetailModels2Records(janken.details());
+        val jdRecords = jankenDetailModels2Records(janken.getDetails());
         multipleInsert(JD, jdRecords);
     }
 
@@ -111,8 +111,7 @@ public class JankenMySQLRepository implements JankenRepository {
         return new Janken(
                 j.getId(),
                 j.getPlayedAt(),
-                jankenDetails.get(0),
-                jankenDetails.get(1));
+                jankenDetails);
     }
 
     private List<JankenDetailsRecord> jankenDetailModels2Records(List<JankenDetail> jankenDetails) {

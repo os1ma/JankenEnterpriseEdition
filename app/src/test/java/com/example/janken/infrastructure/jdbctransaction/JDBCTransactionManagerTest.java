@@ -38,7 +38,7 @@ class JDBCTransactionManagerTest {
             val janken = jankenExecutor.play(handSelection1, handSelection2);
 
             jankenDao.insert(tx, janken);
-            jankenDetailDao.insertAll(tx, janken.details());
+            jankenDetailDao.insertAll(tx, janken.getDetails());
         });
 
         // 検証
@@ -62,7 +62,7 @@ class JDBCTransactionManagerTest {
                 val janken = jankenExecutor.play(handSelection1, handSelection2);
 
                 jankenDao.insert(tx, janken);
-                jankenDetailDao.insertAll(tx, janken.details());
+                jankenDetailDao.insertAll(tx, janken.getDetails());
             });
 
             // 例外が発生しなかった場合

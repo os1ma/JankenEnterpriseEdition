@@ -127,7 +127,7 @@ class JankenCLIApplicationTest {
             // じゃんけん明細データの検証
 
             // 採番される ID 以外の値を検証
-            val savedJankenDetails = savedJanken.details();
+            val savedJankenDetails = savedJanken.getDetails();
 
             {
                 val savedPlayer1JankenDetail = savedJankenDetails.stream()

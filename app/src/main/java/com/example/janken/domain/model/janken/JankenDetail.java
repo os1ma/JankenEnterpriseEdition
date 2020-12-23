@@ -19,6 +19,10 @@ public class JankenDetail {
         return result.equals(Result.WIN);
     }
 
+    public String playerId() {
+        return handSelection.getPlayerId();
+    }
+
     public boolean playerIdEquals(String otherPlayerId) {
         return handSelection.getPlayerId().equals(otherPlayerId);
     }
