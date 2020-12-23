@@ -35,7 +35,8 @@ class JDBCTransactionManagerTest {
         tm.transactional(tx -> {
             val handSelection1 = new HandSelection("1", Hand.STONE);
             val handSelection2 = new HandSelection("2", Hand.STONE);
-            val janken = jankenExecutor.play(handSelection1, handSelection2);
+            val handSelections = List.of(handSelection1, handSelection2);
+            val janken = jankenExecutor.play(handSelections);
 
             jankenDao.insert(tx, janken);
             jankenDetailDao.insertAll(tx, janken.getDetails());
@@ -59,7 +60,8 @@ class JDBCTransactionManagerTest {
             tm.transactional(tx -> {
                 val handSelection1 = new HandSelection("1", Hand.STONE);
                 val handSelection2 = new HandSelection("2", Hand.STONE);
-                val janken = jankenExecutor.play(handSelection1, handSelection2);
+                val handSelections = List.of(handSelection1, handSelection2);
+                val janken = jankenExecutor.play(handSelections);
 
                 jankenDao.insert(tx, janken);
                 jankenDetailDao.insertAll(tx, janken.getDetails());

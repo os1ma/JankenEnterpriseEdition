@@ -11,6 +11,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,8 +31,9 @@ public class JankenApplicationService {
 
         val handSelection1 = new HandSelection(player1Id, player1Hand);
         val handSelection2 = new HandSelection(player2Id, player2Hand);
+        val handSelections = List.of(handSelection1, handSelection2);
 
-        val janken = jankenExecutor.play(handSelection1, handSelection2);
+        val janken = jankenExecutor.play(handSelections);
 
         jankenRepository.save(janken);
 
