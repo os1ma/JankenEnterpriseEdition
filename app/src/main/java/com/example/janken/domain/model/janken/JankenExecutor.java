@@ -33,7 +33,7 @@ public class JankenExecutor {
         } else {
             val winningHand = handSelections.winningHand();
             return handSelections.map(hs -> {
-                val result = hs.getHand().equals(winningHand) ? Result.WIN : Result.LOSE;
+                val result = hs.handEquals(winningHand) ? Result.WIN : Result.LOSE;
                 return new JankenDetail(generateId(), jankenId, hs, result);
             });
         }

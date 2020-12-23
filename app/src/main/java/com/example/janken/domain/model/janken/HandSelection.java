@@ -18,4 +18,8 @@ public class HandSelection {
         return hand.wins(other.hand);
     }
 
+    public boolean handEquals(Hand otherHand) {
+        return hand.equals(otherHand);
+    }
+
 }
