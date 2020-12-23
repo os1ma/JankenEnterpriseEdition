@@ -1,15 +1,13 @@
 package com.example.janken.infrastructure.mysqlrepository;
 
-import com.example.janken.domain.model.janken.Hand;
-import com.example.janken.domain.model.janken.Janken;
-import com.example.janken.domain.model.janken.JankenDetail;
-import com.example.janken.domain.model.janken.JankenRepository;
+import com.example.janken.domain.model.janken.*;
 import com.example.janken.infrastructure.jooq.generated.tables.JANKENS_TABLE;
 import com.example.janken.infrastructure.jooq.generated.tables.JANKEN_DETAILS_TABLE;
 import com.example.janken.infrastructure.jooq.generated.tables.records.JankenDetailsRecord;
 import com.example.janken.infrastructure.jooq.generated.tables.records.JankensRecord;
 import lombok.AllArgsConstructor;
 import lombok.val;
+import org.jooq.Result;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
@@ -95,13 +93,18 @@ public class JankenMySQLRepository implements JankenRepository {
     private Janken group2Model(Map.Entry<JankensRecord, Result<Record7<String, LocalDateTime, String, String, String, UInteger, UInteger>>> group) {
         val j = group.getKey();
 
-        val jankenDetails = group.getValue().stream()
-                .map(jd -> new JankenDetail(
-                        jd.get(JD.ID),
-                        jd.get(JD.JANKEN_ID),
-                        jd.get(JD.PLAYER_ID),
-                        Hand.of(jd.get(JD.HAND).intValue()),
-                        com.example.janken.domain.model.janken.Result.of(jd.get(JD.RESULT).intValue())))
+        List<JankenDetail> jankenDetails = group.getValue().stream()
+                .map(jd -> {
+                    val handSelection = new HandSelection(
+                            jd.get(JD.PLAYER_ID),
+                            Hand.of(jd.get(JD.HAND).intValue()));
+
+                    return new JankenDetail(
+                            jd.get(JD.ID),
+                            jd.get(JD.JANKEN_ID),
+                            handSelection,
+                            com.example.janken.domain.model.janken.Result.of(jd.get(JD.RESULT).intValue()));
+                })
                 .sorted(Comparator.comparing(JankenDetail::getId))
                 .collect(Collectors.toList());
 
@@ -122,8 +125,8 @@ public class JankenMySQLRepository implements JankenRepository {
         return new JankenDetailsRecord(
                 jankenDetail.getId(),
                 jankenDetail.getJankenId(),
-                jankenDetail.getPlayerId(),
-                UInteger.valueOf(jankenDetail.getHand().getValue()),
+                jankenDetail.getHandSelection().getPlayerId(),
+                UInteger.valueOf(jankenDetail.getHandSelection().getHand().getValue()),
                 UInteger.valueOf(jankenDetail.getResult().getValue()));
     }
 

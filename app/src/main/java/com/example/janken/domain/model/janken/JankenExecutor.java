@@ -9,18 +9,18 @@ import java.util.UUID;
 @Component
 public class JankenExecutor {
 
-    public Janken play(String player1Id, Hand player1Hand,
-                       String player2Id, Hand player2Hand) {
+    public Janken play(HandSelection handSelection1,
+                       HandSelection handSelection2) {
         // 勝敗判定
 
         Result player1Result;
         Result player2Result;
 
-        if (player1Hand.wins(player2Hand)) {
+        if (handSelection1.wins(handSelection2)) {
             player1Result = Result.WIN;
             player2Result = Result.LOSE;
 
-        } else if (player2Hand.wins(player1Hand)) {
+        } else if (handSelection2.wins(handSelection1)) {
             player1Result = Result.LOSE;
             player2Result = Result.WIN;
 
@@ -37,8 +37,8 @@ public class JankenExecutor {
 
         // じゃんけん明細を生成
 
-        val detail1 = new JankenDetail(jankenDetail1Id, jankenId, player1Id, player1Hand, player1Result);
-        val detail2 = new JankenDetail(jankenDetail2Id, jankenId, player2Id, player2Hand, player2Result);
+        val detail1 = new JankenDetail(jankenDetail1Id, jankenId, handSelection1, player1Result);
+        val detail2 = new JankenDetail(jankenDetail2Id, jankenId, handSelection2, player2Result);
 
         // じゃんけんを生成
 

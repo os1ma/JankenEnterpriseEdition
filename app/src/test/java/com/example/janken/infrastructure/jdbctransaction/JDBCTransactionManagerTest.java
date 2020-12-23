@@ -1,6 +1,7 @@
 package com.example.janken.infrastructure.jdbctransaction;
 
 import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.HandSelection;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.JankenExecutor;
 import com.example.janken.domain.transaction.Transaction;
@@ -32,7 +33,9 @@ class JDBCTransactionManagerTest {
 
         // 実行
         tm.transactional(tx -> {
-            val janken = jankenExecutor.play("1", Hand.STONE, "2", Hand.STONE);
+            val handSelection1 = new HandSelection("1", Hand.STONE);
+            val handSelection2 = new HandSelection("2", Hand.STONE);
+            val janken = jankenExecutor.play(handSelection1, handSelection2);
 
             jankenDao.insert(tx, janken);
             jankenDetailDao.insertAll(tx, janken.details());
@@ -54,7 +57,9 @@ class JDBCTransactionManagerTest {
         // 実行
         try {
             tm.transactional(tx -> {
-                val janken = jankenExecutor.play("1", Hand.STONE, "2", Hand.STONE);
+                val handSelection1 = new HandSelection("1", Hand.STONE);
+                val handSelection2 = new HandSelection("2", Hand.STONE);
+                val janken = jankenExecutor.play(handSelection1, handSelection2);
 
                 jankenDao.insert(tx, janken);
                 jankenDetailDao.insertAll(tx, janken.details());

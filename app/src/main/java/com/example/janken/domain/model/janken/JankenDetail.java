@@ -12,12 +12,15 @@ import lombok.ToString;
 public class JankenDetail {
     private String id;
     private String jankenId;
-    private String playerId;
-    private Hand hand;
+    private HandSelection handSelection;
     private Result result;
 
     public boolean isResultWin() {
         return result.equals(Result.WIN);
+    }
+
+    public boolean playerIdEquals(String otherPlayerId) {
+        return handSelection.getPlayerId().equals(otherPlayerId);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.janken.infrastructure.mysqldao;
 
 import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.HandSelection;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.Result;
 import com.example.janken.infrastructure.dao.JankenDetailDao;
@@ -67,7 +68,9 @@ class JankenDetailRowMapper implements RowMapper<JankenDetail> {
         val hand = Hand.of(rs.getInt(4));
         val result = Result.of(rs.getInt(5));
 
-        return new JankenDetail(id, jankenId, playerId, hand, result);
+        val handSelection = new HandSelection(playerId, hand);
+
+        return new JankenDetail(id, jankenId, handSelection, result);
     }
 
 }
@@ -79,8 +82,8 @@ class JankenDetailInsertMapper implements InsertMapper<JankenDetail> {
         return Map.of(
                 "id", object.getId(),
                 "janken_id", object.getJankenId(),
-                "player_id", object.getPlayerId(),
-                "hand", object.getHand().getValue(),
+                "player_id", object.getHandSelection().getPlayerId(),
+                "hand", object.getHandSelection().getHand().getValue(),
                 "result", object.getResult().getValue());
     }
 

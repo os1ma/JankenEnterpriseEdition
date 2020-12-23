@@ -27,10 +27,10 @@ public class Janken {
 
     public Optional<String> winnerPlayerId() {
         if (detail1.isResultWin()) {
-            return Optional.of(detail1.getPlayerId());
+            return Optional.of(detail1.getHandSelection().getPlayerId());
 
         } else if (detail2.isResultWin()) {
-            return Optional.of(detail2.getPlayerId());
+            return Optional.of(detail2.getHandSelection().getPlayerId());
 
         } else {
             return Optional.empty();
@@ -45,7 +45,7 @@ public class Janken {
     public boolean isWinner(Player player) {
         return details().stream()
                 // そのプレイヤーのじゃんけん明細にしぼる
-                .filter(d -> d.getPlayerId().equals(player.getId()))
+                .filter(d -> d.playerIdEquals(player.getId()))
                 .findFirst()
                 // 勝利かどうかに変換
                 .map(JankenDetail::isResultWin)

@@ -1,6 +1,7 @@
 package com.example.janken.application.service.janken;
 
 import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.HandSelection;
 import com.example.janken.domain.model.janken.JankenExecutor;
 import com.example.janken.domain.model.janken.JankenRepository;
 import com.example.janken.domain.model.player.Player;
@@ -27,7 +28,10 @@ public class JankenApplicationService {
     public Optional<Player> play(String player1Id, Hand player1Hand,
                                  String player2Id, Hand player2Hand) {
 
-        val janken = jankenExecutor.play(player1Id, player1Hand, player2Id, player2Hand);
+        val handSelection1 = new HandSelection(player1Id, player1Hand);
+        val handSelection2 = new HandSelection(player2Id, player2Hand);
+
+        val janken = jankenExecutor.play(handSelection1, handSelection2);
 
         jankenRepository.save(janken);
 

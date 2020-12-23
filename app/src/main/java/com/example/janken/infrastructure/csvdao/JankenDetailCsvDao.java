@@ -1,6 +1,7 @@
 package com.example.janken.infrastructure.csvdao;
 
 import com.example.janken.domain.model.janken.Hand;
+import com.example.janken.domain.model.janken.HandSelection;
 import com.example.janken.domain.model.janken.JankenDetail;
 import com.example.janken.domain.model.janken.Result;
 import com.example.janken.domain.transaction.Transaction;
@@ -81,11 +82,12 @@ public class JankenDetailCsvDao implements JankenDetailDao<Transaction> {
         val hand = Hand.of(Integer.parseInt(values[3]));
         val result = Result.of(Integer.parseInt(values[4]));
 
+        val handSelection = new HandSelection(playerId, hand);
+
         return new JankenDetail(
                 jankenDetailId,
                 jankenId,
-                playerId,
-                hand,
+                handSelection,
                 result);
     }
 
@@ -93,8 +95,8 @@ public class JankenDetailCsvDao implements JankenDetailDao<Transaction> {
         return String.join(CsvDaoUtils.CSV_DELIMITER,
                 String.valueOf(jankenDetail.getId()),
                 String.valueOf(jankenDetail.getJankenId()),
-                String.valueOf(jankenDetail.getPlayerId()),
-                String.valueOf(jankenDetail.getHand().getValue()),
+                String.valueOf(jankenDetail.getHandSelection().getPlayerId()),
+                String.valueOf(jankenDetail.getHandSelection().getHand().getValue()),
                 String.valueOf(jankenDetail.getResult().getValue()));
     }
 

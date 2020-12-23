@@ -131,25 +131,25 @@ class JankenCLIApplicationTest {
 
             {
                 val savedPlayer1JankenDetail = savedJankenDetails.stream()
-                        .filter(jd -> jd.getPlayerId().equals(PLAYER_1_ID))
+                        .filter(jd -> jd.playerIdEquals(PLAYER_1_ID))
                         .findFirst()
                         .get();
 
                 assertEquals(savedJankenId, savedPlayer1JankenDetail.getJankenId());
-                assertEquals(PLAYER_1_ID, savedPlayer1JankenDetail.getPlayerId());
-                assertEquals(player1HandValue, savedPlayer1JankenDetail.getHand().getValue());
+                assertEquals(PLAYER_1_ID, savedPlayer1JankenDetail.getHandSelection().getPlayerId());
+                assertEquals(player1HandValue, savedPlayer1JankenDetail.getHandSelection().getHand().getValue());
                 assertEquals(player1ResultValue, savedPlayer1JankenDetail.getResult().getValue());
             }
 
             {
                 val savedPlayer1JankenDetai2 = savedJankenDetails.stream()
-                        .filter(jd -> jd.getPlayerId().equals(PLAYER_2_ID))
+                        .filter(jd -> jd.playerIdEquals(PLAYER_2_ID))
                         .findFirst()
                         .get();
 
                 assertEquals(savedJankenId, savedPlayer1JankenDetai2.getJankenId());
-                assertEquals(PLAYER_2_ID, savedPlayer1JankenDetai2.getPlayerId());
-                assertEquals(player2HandValue, savedPlayer1JankenDetai2.getHand().getValue());
+                assertEquals(PLAYER_2_ID, savedPlayer1JankenDetai2.getHandSelection().getPlayerId());
+                assertEquals(player2HandValue, savedPlayer1JankenDetai2.getHandSelection().getHand().getValue());
                 assertEquals(player2ResultValue, savedPlayer1JankenDetai2.getResult().getValue());
             }
 
