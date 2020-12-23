@@ -1,9 +1,6 @@
 package com.example.janken.application.service.janken;
 
-import com.example.janken.domain.model.janken.Hand;
-import com.example.janken.domain.model.janken.HandSelection;
-import com.example.janken.domain.model.janken.JankenExecutor;
-import com.example.janken.domain.model.janken.JankenRepository;
+import com.example.janken.domain.model.janken.*;
 import com.example.janken.domain.model.player.Player;
 import com.example.janken.domain.model.player.PlayerRepository;
 import lombok.AllArgsConstructor;
@@ -11,7 +8,6 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +27,7 @@ public class JankenApplicationService {
 
         val handSelection1 = new HandSelection(player1Id, player1Hand);
         val handSelection2 = new HandSelection(player2Id, player2Hand);
-        val handSelections = List.of(handSelection1, handSelection2);
+        val handSelections = HandSelections.of(handSelection1, handSelection2);
 
         val janken = jankenExecutor.play(handSelections);
 
