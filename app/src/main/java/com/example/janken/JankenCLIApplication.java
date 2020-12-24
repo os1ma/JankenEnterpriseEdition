@@ -4,7 +4,6 @@ import com.example.janken.application.scenario.PlayJankenScenario;
 import com.example.janken.application.service.janken.JankenApplicationService;
 import com.example.janken.application.service.player.PlayerApplicationService;
 import com.example.janken.domain.model.janken.JankenExecutor;
-import com.example.janken.infrastructure.jdbctransaction.JDBCTransaction;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqlquery.player.PlayerMySQLQueryService;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
@@ -22,7 +21,7 @@ public class JankenCLIApplication {
         val tm = new JDBCTransactionManager();
 
         tm.transactional(tx -> {
-            val conn = ((JDBCTransaction) tx).getConn();
+            val conn = tx.getConn();
             val dslContext = DSL.using(conn, SQLDialect.MYSQL);
 
             // 依存解決の設定

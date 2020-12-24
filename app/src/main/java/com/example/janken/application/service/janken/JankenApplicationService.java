@@ -25,14 +25,22 @@ public class JankenApplicationService {
     public Optional<Player> play(String player1Id, Hand player1Hand,
                                  String player2Id, Hand player2Hand) {
 
+        // プレイヤーの存在チェック
+        playerRepository.findPlayerById(player1Id).orElseThrow();
+        playerRepository.findPlayerById(player2Id).orElseThrow();
+
+        // 手の準備
         val handSelection1 = new HandSelection(player1Id, player1Hand);
         val handSelection2 = new HandSelection(player2Id, player2Hand);
         val handSelections = HandSelections.of(handSelection1, handSelection2);
 
+        // じゃんけんを実行
         val janken = jankenExecutor.play(handSelections);
 
+        // 保存
         jankenRepository.save(janken);
 
+        // 勝者を返却
         return janken.winnerPlayerIds()
                 .stream()
                 .findFirst()
