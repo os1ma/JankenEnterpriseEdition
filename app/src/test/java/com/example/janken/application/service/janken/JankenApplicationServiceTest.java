@@ -1,5 +1,6 @@
 package com.example.janken.application.service.janken;
 
+import com.example.janken.application.exception.ApplicationException;
 import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.janken.JankenExecutor;
 import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
@@ -9,8 +10,6 @@ import lombok.val;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
-
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,7 +31,7 @@ class JankenApplicationServiceTest {
             val jankenExecutor = new JankenExecutor();
             val service = new JankenApplicationService(jankenRepository, playerRepository, jankenExecutor);
 
-            assertThrows(NoSuchElementException.class,
+            assertThrows(ApplicationException.class,
                     () -> service.play(NON_EXISTING_PLAYER_ID, Hand.STONE, EXISTING_PLAYER_ID, Hand.STONE));
         });
 
