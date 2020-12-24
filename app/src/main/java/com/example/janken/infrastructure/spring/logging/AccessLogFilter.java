@@ -19,8 +19,8 @@ import java.util.UUID;
 @Slf4j
 class AccessLogFilter implements Filter {
 
-    private static final String LOG_FORMAT_FOR_ACCESS_REQUEST = "[ Request ] method={}, url={}";
-    private static final String LOG_FORMAT_FOR_ACCESS_RESPONSE = "[ Response ] method={}, url={}, status={}";
+    private static final String LOG_FORMAT_FOR_ACCESS_REQUEST = "[Request] method={}, url={}";
+    private static final String LOG_FORMAT_FOR_ACCESS_RESPONSE = "[Response] method={}, url={}, status={}";
 
     /**
      * コントローラの処理の前後でアクセスログを出力します。
@@ -34,6 +34,7 @@ class AccessLogFilter implements Filter {
         val httpServletRequest = attributes.getRequest();
         val method = httpServletRequest.getMethod();
         val urlWithQueryString = urlWithQueryString(httpServletRequest);
+
         log.info(LOG_FORMAT_FOR_ACCESS_REQUEST, method, urlWithQueryString);
 
         chain.doFilter(request, response);
