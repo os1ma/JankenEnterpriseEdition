@@ -1,4 +1,4 @@
-package com.example.janken.infrastructure.spring;
+package com.example.janken.infrastructure.spring.error;
 
 import com.example.janken.application.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;

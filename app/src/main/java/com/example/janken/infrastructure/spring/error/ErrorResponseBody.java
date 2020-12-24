@@ -1,4 +1,4 @@
-package com.example.janken.infrastructure.spring;
+package com.example.janken.infrastructure.spring.error;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
