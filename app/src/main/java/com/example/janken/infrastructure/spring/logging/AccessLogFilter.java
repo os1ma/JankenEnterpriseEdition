@@ -19,6 +19,8 @@ import java.util.UUID;
 @Slf4j
 class AccessLogFilter implements Filter {
 
+    private static final String REQUEST_ID_KEY = "REQUEST_ID";
+
     private static final String LOG_FORMAT_FOR_ACCESS_REQUEST = "[Request] method={}, url={}";
     private static final String LOG_FORMAT_FOR_ACCESS_RESPONSE = "[Response] method={}, url={}, status={}";
 
@@ -28,7 +30,7 @@ class AccessLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         val uuid = UUID.randomUUID().toString();
-        MDC.put("REQUEST_ID", uuid);
+        MDC.put(REQUEST_ID_KEY, uuid);
 
         val attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         val httpServletRequest = attributes.getRequest();
@@ -37,14 +39,19 @@ class AccessLogFilter implements Filter {
 
         log.info(LOG_FORMAT_FOR_ACCESS_REQUEST, method, urlWithQueryString);
 
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
 
-        val status = Optional.of(attributes)
-                .map(ServletRequestAttributes::getResponse)
-                .map(HttpServletResponse::getStatus)
-                .orElse(null);
+        } finally {
+            val status = Optional.of(attributes)
+                    .map(ServletRequestAttributes::getResponse)
+                    .map(HttpServletResponse::getStatus)
+                    .orElse(null);
 
-        log.info(LOG_FORMAT_FOR_ACCESS_RESPONSE, method, urlWithQueryString, status);
+            log.info(LOG_FORMAT_FOR_ACCESS_RESPONSE, method, urlWithQueryString, status);
+
+            MDC.remove(REQUEST_ID_KEY);
+        }
     }
 
     /**
