@@ -13,7 +13,7 @@ spring:
 
 logging:
   level:
-    root: ${LOG_LEVEL:INFO}
+    root: INFO
     org:
       jooq: ${LOG_LEVEL:INFO}
     com:
