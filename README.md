@@ -1,6 +1,8 @@
 # JankenEnterpriseEdition
 
-![badge.svg](https://github.com/os1ma/JankenEnterpriseEdition/workflows/workflow/badge.svg)
+![badge.svg](https://github.com/os1ma/JankenEnterpriseEdition/workflows/main/badge.svg)
+
+![badge.svg](https://github.com/os1ma/JankenEnterpriseEdition/workflows/schedule/badge.svg)
 
 じゃんけんプログラムを全力で実装していく一人アドベントカレンダーのソースコードリポジトリです。
 
