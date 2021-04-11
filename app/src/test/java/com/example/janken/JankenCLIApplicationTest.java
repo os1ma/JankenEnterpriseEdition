@@ -5,6 +5,7 @@ import com.example.janken.infrastructure.jdbctransaction.JDBCTransactionManager;
 import com.example.janken.infrastructure.mysqldao.JankenDetailMySQLDao;
 import com.example.janken.infrastructure.mysqldao.JankenMySQLDao;
 import com.example.janken.infrastructure.mysqlrepository.JankenMySQLRepository;
+import com.example.janken.presentation.cli.view.StandardOutputView;
 import lombok.val;
 import org.jooq.Log;
 import org.jooq.SQLDialect;
@@ -48,6 +49,9 @@ class JankenCLIApplicationTest {
         System.setProperty("org.jooq.no-logo", "true");
         // jOOQ のデバッグログを抑制
         JooqLogger.globalThreshold(Log.Level.INFO);
+
+        // Velocity 初期化のログを出さないよう、この時点で Velocity を初期化
+        new StandardOutputView(null);
     }
 
     @AfterAll

@@ -6,7 +6,7 @@ import com.example.janken.domain.model.janken.Hand;
 import com.example.janken.domain.model.player.Player;
 import lombok.AllArgsConstructor;
 import lombok.val;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Optional;
 
