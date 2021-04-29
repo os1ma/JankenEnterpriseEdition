@@ -40,6 +40,9 @@ class JankenCLIApplicationTest {
 
     @BeforeAll
     static void setup() {
+        // Velocity 初期化のログを出さないよう、この時点で Velocity を初期化
+        new StandardOutputView(null);
+
         stdinSnatcher = new StandardInputSnatcher();
         System.setIn(stdinSnatcher);
         stdoutSnatcher = new StandardOutputSnatcher();
@@ -49,9 +52,6 @@ class JankenCLIApplicationTest {
         System.setProperty("org.jooq.no-logo", "true");
         // jOOQ のデバッグログを抑制
         JooqLogger.globalThreshold(Log.Level.INFO);
-
-        // Velocity 初期化のログを出さないよう、この時点で Velocity を初期化
-        new StandardOutputView(null);
     }
 
     @AfterAll
