@@ -47,6 +47,10 @@ dependencyCheck {
     failBuildOnCVSS = 7.0F
 }
 
+jar {
+    enabled = false
+}
+
 apply from: 'jooq-flyway.gradle'
 
 // Heroku の設定
