@@ -33,11 +33,6 @@ public class CustomErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    @Override
-    public String getErrorPath() {
-        return ERROR_PATH;
-    }
-
     @RequestMapping(ERROR_PATH)
     public ResponseEntity<ErrorResponseBody> error(WebRequest request) {
         val error = errorAttributes.getError(request);
