@@ -50,4 +50,4 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_COLOR: ${{ job.status }}
-        SLACK_MESSAGE: 'Build failed.'
+        SLACK_MESSAGE: 'BUILD FAILURE'
