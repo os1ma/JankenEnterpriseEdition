@@ -10,8 +10,6 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-ext["tomcat.version"] = "9.0.58"
-
 repositories {
     jcenter()
 }
