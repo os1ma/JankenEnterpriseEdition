@@ -45,6 +45,7 @@ test {
 
 dependencyCheck {
     failBuildOnCVSS = 7.0F
+    suppressionFile = "app/owasp-suppressions.xml"
 }
 
 jar {
