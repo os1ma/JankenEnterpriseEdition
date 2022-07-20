@@ -4,6 +4,8 @@
 
 ![badge.svg](https://github.com/os1ma/JankenEnterpriseEdition/workflows/schedule/badge.svg)
 
+[![dependency-check-analyze](https://github.com/os1ma/JankenEnterpriseEdition/actions/workflows/dependency-check-analyze.yaml/badge.svg)](https://github.com/os1ma/JankenEnterpriseEdition/actions/workflows/dependency-check-analyze.yaml)
+
 じゃんけんプログラムを全力で実装していく一人アドベントカレンダーのソースコードリポジトリです。
 
 詳しくは [じゃんけん Advent Calendar 2020](https://qiita.com/advent-calendar/2020/janken) を参照ください。
