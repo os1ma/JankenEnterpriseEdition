@@ -33,7 +33,6 @@ main() {
     build)
       ./gradlew \
         clean \
-        dependencyCheckAnalyze \
         flywayMigrate \
         generateTablesJooqSchemaSource \
         build
@@ -45,6 +44,11 @@ main() {
         flywayMigrate \
         generateTablesJooqSchemaSource \
         test
+      ;;
+
+    dependencyCheckAnalyze)
+      ./gradlew \
+        dependencyCheckAnalyze
       ;;
 
     jar)

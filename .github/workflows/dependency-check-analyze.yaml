@@ -1,0 +1,43 @@
+name: dependency-check-analyze
+
+on:
+  push:
+    branches:
+    - main
+  schedule:
+    # 日本時間で毎晩 21 時
+    - cron: '0 12 * * *'
+
+jobs:
+  dependency-check-analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-${{ runner.action }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-${{ runner.action }}-gradle
+
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '11.0.9'
+        java-package: jdk
+        architecture: x64
+    - run: ./bin/run.sh dependencyCheckAnalyze
+
+    - name: Archive reports
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: reports
+        path: ./app/build/reports/**
+
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      if: ${{ failure() }}
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_MESSAGE: 'BUILD FAILURE'
