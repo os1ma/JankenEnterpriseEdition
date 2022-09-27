@@ -37,6 +37,9 @@ dependencies {
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.tngtech.archunit:archunit-junit5:0.14.1'
+
+    // 脆弱性対策
+    implementation 'org.yaml:snakeyaml:1.33'
 }
 
 test {
